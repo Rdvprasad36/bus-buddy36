@@ -29,8 +29,11 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
       className
     )}>
       <div className="container mx-auto flex items-center justify-between">
-        <Link to="/" className="bus-buddy-transition hover:opacity-80">
-          <Logo />
+        <Link to="/" className="bus-buddy-transition hover:opacity-80 flex items-center">
+          <Logo size="sm" withText={false} className="mr-2" />
+          <h1 className="text-xl font-bold text-brand font-mono uppercase">
+            BUS BUDDY
+          </h1>
         </Link>
 
         <div className="sm:hidden">
@@ -53,7 +56,7 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
             <li>
               <Link 
                 to="/home" 
-                className="text-sm font-medium hover:text-primary bus-buddy-transition"
+                className="text-sm font-medium hover:text-brand bus-buddy-transition"
               >
                 Home
               </Link>
@@ -61,7 +64,7 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
             <li>
               <Link 
                 to="/about" 
-                className="text-sm font-medium hover:text-primary bus-buddy-transition"
+                className="text-sm font-medium hover:text-brand bus-buddy-transition"
               >
                 About
               </Link>
@@ -106,7 +109,7 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
               </li>
             ) : (
               <li>
-                <Button asChild size="sm">
+                <Button asChild size="sm" className="bg-brand hover:bg-brand/90 text-white">
                   <Link to="/login">Login</Link>
                 </Button>
               </li>
