@@ -1,0 +1,119 @@
+
+import { Link } from "react-router-dom";
+import { Logo } from "./Logo";
+import { Button } from "@/components/ui/button";
+import { User, LogOut, Menu } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
+
+interface NavBarProps {
+  isLoggedIn?: boolean;
+  userName?: string;
+  className?: string;
+}
+
+export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarProps) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  return (
+    <header className={cn(
+      "fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b", 
+      className
+    )}>
+      <div className="container mx-auto flex items-center justify-between">
+        <Link to="/" className="bus-buddy-transition hover:opacity-80">
+          <Logo />
+        </Link>
+
+        <div className="sm:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+        </div>
+
+        <nav className={cn(
+          "absolute top-full left-0 w-full p-4 glass border-b transform transition-all duration-300 ease-in-out sm:static sm:block sm:w-auto sm:p-0 sm:border-0 sm:bg-transparent sm:transform-none",
+          isMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0 pointer-events-none",
+          "sm:translate-y-0 sm:opacity-100 sm:pointer-events-auto"
+        )}>
+          <ul className="flex flex-col sm:flex-row items-center gap-5">
+            <li>
+              <Link 
+                to="/home" 
+                className="text-sm font-medium hover:text-primary bus-buddy-transition"
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link 
+                to="/about" 
+                className="text-sm font-medium hover:text-primary bus-buddy-transition"
+              >
+                About
+              </Link>
+            </li>
+            {isLoggedIn ? (
+              <li>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="flex items-center gap-2"
+                    >
+                      <User className="h-4 w-4" />
+                      <span className="hidden sm:inline-block max-w-[100px] truncate">
+                        {userName}
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/profile" className="cursor-pointer w-full">
+                        Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/activity" className="cursor-pointer w-full">
+                        Activity
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/logout" className="cursor-pointer w-full flex items-center text-destructive">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </li>
+            ) : (
+              <li>
+                <Button asChild size="sm">
+                  <Link to="/login">Login</Link>
+                </Button>
+              </li>
+            )}
+          </ul>
+        </nav>
+      </div>
+    </header>
+  );
+}
