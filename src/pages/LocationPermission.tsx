@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LocationPermission } from "@/components/LocationPermission";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "@/hooks/use-toast";
 
 export default function LocationPermissionPage() {
   const navigate = useNavigate();

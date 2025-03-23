@@ -24,7 +24,7 @@ import {
   RadioGroupItem,
 } from "@/components/ui/radio-group";
 import { Share2, Users, Map } from "lucide-react";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "@/hooks/use-toast";
 
 interface ShareLocationProps {
   className?: string;

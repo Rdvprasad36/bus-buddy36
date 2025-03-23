@@ -5,7 +5,7 @@ import { NavBar } from "@/components/NavBar";
 import { ShareLocation } from "@/components/ShareLocation";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "@/hooks/use-toast";
 
 export default function Share() {
   const navigate = useNavigate();
