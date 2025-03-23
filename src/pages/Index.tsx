@@ -64,10 +64,15 @@ export default function Index() {
           {/* Andhra Pradesh Map */}
           <section className="mb-8">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-4 mb-6">
-              <h2 className="text-xl font-semibold mb-4 text-blue-600">Andhra Pradesh Bus Network</h2>
-              <Map className="h-[400px] w-full mb-2" allowEditing={true} />
+              <h2 className="text-xl font-semibold mb-4 text-blue-600">Visakhapatnam Bus Network</h2>
+              <Map 
+                className="h-[400px] w-full mb-2" 
+                useGoogleMaps={true} 
+                location="visakhapatnam" 
+                allowEditing={false}
+              />
               <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-                Zoom and pan to explore bus routes across Andhra Pradesh
+                Interactive map of Visakhapatnam bus routes
               </p>
             </div>
           </section>

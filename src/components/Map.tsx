@@ -13,6 +13,8 @@ interface MapProps {
   zoom?: number;
   children?: React.ReactNode;
   allowEditing?: boolean;
+  useGoogleMaps?: boolean;
+  location?: string;
 }
 
 // Andhra Pradesh coordinates
@@ -23,7 +25,9 @@ export function Map({
   center = AP_COORDINATES, 
   zoom = 6.5,
   children,
-  allowEditing = true
+  allowEditing = true,
+  useGoogleMaps = false,
+  location = "visakhapatnam"
 }: MapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<mapboxgl.Map | null>(null);
@@ -33,6 +37,12 @@ export function Map({
 
   // Initialize map
   useEffect(() => {
+    // If using Google Maps, we don't need to initialize Mapbox
+    if (useGoogleMaps) {
+      setIsLoaded(true);
+      return;
+    }
+    
     if (!mapRef.current || mapInstance.current) return;
 
     // Use a placeholder token for now
@@ -75,7 +85,7 @@ export function Map({
       mapInstance.current?.remove();
       mapInstance.current = null;
     };
-  }, [center, zoom, allowEditing]);
+  }, [center, zoom, allowEditing, useGoogleMaps]);
 
   const handleLocateMe = () => {
     setIsLocating(true);
@@ -109,6 +119,26 @@ export function Map({
   const handleZoomOut = () => {
     mapInstance.current?.zoomOut();
   };
+
+  if (useGoogleMaps) {
+    return (
+      <div className={cn("relative rounded-lg overflow-hidden", className)}>
+        {!isLoaded ? (
+          <Skeleton className="w-full h-full absolute inset-0" />
+        ) : (
+          <iframe 
+            width="100%" 
+            height="100%" 
+            src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=${encodeURIComponent(location)}&zoom=14&maptype=roadmap`} 
+            style={{ border: 0 }} 
+            loading="lazy" 
+            allowFullScreen
+            title="Google Map"
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className={cn("relative rounded-lg overflow-hidden", className)}>
