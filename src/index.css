@@ -1,6 +1,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -39,6 +40,8 @@
     --radius: 0.5rem;
 
     --brand: 200 18% 40%;
+    --bus-blue: 217 100% 50%;
+    --bus-gray: 214 17% 45%;
   }
  
   .dark {
@@ -71,6 +74,8 @@
     --ring: 212 10% 70%;
 
     --brand: 200 30% 60%;
+    --bus-blue: 217 100% 60%;
+    --bus-gray: 214 17% 60%;
   }
 }
 
@@ -83,6 +88,7 @@
     @apply bg-background text-foreground font-sans antialiased;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-family: 'Montserrat', 'Inter', sans-serif;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -159,5 +165,38 @@
 
   .animate-letterSpacing {
     animation: letterSpacing 1s ease-out forwards;
+    opacity: 0;
+    animation-fill-mode: forwards;
+  }
+  
+  /* New animations for the updated logo */
+  @keyframes slideInLeft {
+    from {
+      transform: translateX(-50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideInRight {
+    from {
+      transform: translateX(50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .animate-slideInLeft {
+    animation: slideInLeft 0.8s ease-out forwards;
+  }
+  
+  .animate-slideInRight {
+    animation: slideInRight 0.8s ease-out forwards;
   }
 }

@@ -57,8 +57,12 @@ export default {
 					empty: '#FFFFFF',
 					medium: '#FFD700',
 					full: '#FF4136',
+					blue: '#0052FF',
+					gray: '#546E7A',
 				},
-				brand: '#546E7A',
+				brand: 'hsl(var(--brand))',
+				'bus-blue': 'hsl(var(--bus-blue))',
+				'bus-gray': 'hsl(var(--bus-gray))',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -115,7 +119,7 @@ export default {
 				'bounce-soft': 'bounce-soft 2s ease-in-out infinite'
 			},
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
+				sans: ['Montserrat', 'Inter', 'sans-serif'],
 				mono: ['JetBrains Mono', 'monospace']
 			}
 		}

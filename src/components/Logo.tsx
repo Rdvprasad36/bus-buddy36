@@ -8,6 +8,7 @@ interface LogoProps {
   withText?: boolean;
   withTagline?: boolean;
   animated?: boolean;
+  variant?: "vertical" | "horizontal";
 }
 
 export function Logo({ 
@@ -15,7 +16,8 @@ export function Logo({
   size = "md", 
   withText = true,
   withTagline = false,
-  animated = false
+  animated = false,
+  variant = "vertical"
 }: LogoProps) {
   const [showLogo, setShowLogo] = useState(!animated);
   const [showText, setShowText] = useState(!animated);
@@ -49,7 +51,11 @@ export function Logo({
   };
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    <div className={cn(
+      "flex items-center", 
+      variant === "vertical" ? "flex-col gap-1" : "flex-row gap-2",
+      className
+    )}>
       <div 
         className={cn(
           "relative", 
@@ -58,29 +64,18 @@ export function Logo({
           animated && (showLogo ? "opacity-100 scale-100" : "opacity-0 scale-90")
         )}
       >
-        <div className={cn(
-          "absolute inset-0 rounded-full border-2 border-brand",
-          animated && showLogo && "animate-pulse-soft"
-        )}></div>
-        <svg 
-          viewBox="0 0 100 100" 
-          className={cn("text-brand", sizes[size])}
-          aria-hidden="true"
-        >
-          <g transform="translate(30, 20)">
-            <rect x="0" y="0" width="40" height="35" rx="5" fill="currentColor" />
-            <rect x="8" y="8" width="8" height="8" rx="4" fill="white" />
-            <rect x="24" y="8" width="8" height="8" rx="4" fill="white" />
-            <rect x="-10" y="15" width="10" height="15" rx="2" fill="currentColor" />
-            <rect x="40" y="15" width="10" height="15" rx="2" fill="currentColor" />
-            <rect x="12" y="22" width="16" height="4" rx="2" fill="white" />
-            <rect x="-5" y="35" width="50" height="10" rx="3" fill="currentColor" />
-          </g>
-        </svg>
+        <img 
+          src="/lovable-uploads/6bda028b-614a-4804-8577-98da0f46e213.png" 
+          alt="Bus Buddy Logo" 
+          className={cn(sizes[size], "object-contain")} 
+        />
       </div>
       
       {withText && (
-        <div className="flex flex-col">
+        <div className={cn(
+          "flex flex-col",
+          variant === "horizontal" && "items-start"
+        )}>
           <div className="flex items-center">
             <h1 
               className={cn(
@@ -88,20 +83,29 @@ export function Logo({
                 textSizes[size],
                 animated && "transition-all duration-700 transform",
                 animated && (showText ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"),
-                "text-brand font-mono uppercase"
+                variant === "horizontal" ? "text-blue-600 font-sans" : "text-brand font-mono uppercase"
               )}
             >
-              <span className="mr-1">BUS</span>
-              <span>BUDDY</span>
+              {variant === "horizontal" ? (
+                <>
+                  <span className="text-blue-600 mr-1">Bus</span>
+                  <span className="text-gray-600">Buddy</span>
+                </>
+              ) : (
+                <>
+                  <span className="mr-1">BUS</span>
+                  <span>BUDDY</span>
+                </>
+              )}
             </h1>
           </div>
           {withTagline && (
             <p className={cn(
-              "text-xs text-muted-foreground leading-tight",
+              "text-xs text-blue-500 leading-tight",
               animated && "transition-all duration-700 transform",
               animated && (showTagline ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2")
             )}>
-              Track your bus. Easy to commute.
+              Track Your Bus, Ease Your Commute
             </p>
           )}
         </div>

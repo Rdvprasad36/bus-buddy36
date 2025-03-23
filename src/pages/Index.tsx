@@ -40,17 +40,36 @@ export default function Index() {
       {!isIntroComplete ? (
         <div className="flex flex-col items-center justify-center h-screen">
           <div className="w-64 h-64 relative">
-            <Logo size="lg" withText withTagline animated />
+            <div className="flex flex-col items-center">
+              <img 
+                src="/lovable-uploads/6bda028b-614a-4804-8577-98da0f46e213.png" 
+                alt="Bus Buddy Logo" 
+                className={cn(
+                  "w-24 h-24 object-contain",
+                  "animate-fadeInUp"
+                )} 
+              />
+              <div className="mt-4 text-center">
+                <h1 className="text-3xl font-bold animate-letterSpacing" style={{ animationDelay: "1.5s" }}>
+                  <span className="text-blue-600">Bus</span>
+                  <span className="text-gray-600">Buddy</span>
+                </h1>
+                <p className="text-sm text-blue-500 opacity-0 animate-fadeInUp" style={{ animationDelay: "2.8s", animationFillMode: "forwards" }}>
+                  Track Your Bus, Ease Your Commute
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       ) : (
         <>
           <div className="w-full max-w-4xl mx-auto">
-            <div className="flex justify-between items-center mb-8">
-              <Logo size="md" withText={false} className="mr-2" />
-              <h1 className="text-2xl font-bold text-brand font-mono uppercase">
-                BUS BUDDY
-              </h1>
+            <div className="flex items-center mb-8">
+              <img 
+                src="/lovable-uploads/599aa3c5-a5bd-48f4-8005-17a3ceedb80c.png" 
+                alt="Bus Buddy Header"
+                className="w-full max-w-md mx-auto object-contain" 
+              />
             </div>
           </div>
           
@@ -84,7 +103,7 @@ export default function Index() {
             <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
               <Button 
                 size="lg" 
-                className="flex-1 relative overflow-hidden group bg-brand hover:bg-brand/90"
+                className="flex-1 relative overflow-hidden group bg-blue-600 hover:bg-blue-700"
                 onClick={() => navigate("/login")}
               >
                 <span className="absolute inset-0 bg-primary-foreground/20 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
@@ -97,10 +116,10 @@ export default function Index() {
               <Button 
                 variant="outline"
                 size="lg" 
-                className="flex-1 relative overflow-hidden group border-brand text-brand hover:text-brand/90 hover:bg-brand/10"
+                className="flex-1 relative overflow-hidden group border-blue-600 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                 onClick={() => navigate("/signup")}
               >
-                <span className="absolute inset-0 bg-brand/10 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
+                <span className="absolute inset-0 bg-blue-50 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
                 <span className="relative flex items-center justify-center gap-2">
                   <Share2 className="h-5 w-5" />
                   <span>Share Location</span>
@@ -111,11 +130,11 @@ export default function Index() {
             <div className="mt-8 text-xs text-muted-foreground">
               <p>
                 By using Bus Buddy, you agree to our{" "}
-                <a href="#" className="text-brand hover:underline bus-buddy-transition">
+                <a href="#" className="text-blue-600 hover:underline bus-buddy-transition">
                   Terms of Service
                 </a>
                 {" "}and{" "}
-                <a href="#" className="text-brand hover:underline bus-buddy-transition">
+                <a href="#" className="text-blue-600 hover:underline bus-buddy-transition">
                   Privacy Policy
                 </a>
               </p>
