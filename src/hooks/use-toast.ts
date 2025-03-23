@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 import type {
@@ -13,6 +14,7 @@ type ToasterToast = ToastProps & {
   title?: React.ReactNode
   description?: React.ReactNode
   action?: ToastActionElement
+  variant?: "default" | "destructive" | "success" | "info" | "warning"
 }
 
 const actionTypes = {
@@ -166,6 +168,39 @@ function toast({ ...props }: Toast) {
     dismiss,
     update,
   }
+}
+
+// Add variant methods to toast
+toast.success = (title: string, description?: string) => {
+  return toast({
+    variant: "success",
+    title,
+    description,
+  })
+}
+
+toast.error = (title: string, description?: string) => {
+  return toast({
+    variant: "destructive",
+    title,
+    description,
+  })
+}
+
+toast.warning = (title: string, description?: string) => {
+  return toast({
+    variant: "warning",
+    title,
+    description,
+  })
+}
+
+toast.info = (title: string, description?: string) => {
+  return toast({
+    variant: "info",
+    title,
+    description,
+  })
 }
 
 function useToast() {
