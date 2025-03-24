@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthForm } from "@/components/AuthForm";
+import { SimpleAuthForm } from "@/components/SimpleAuthForm";
 import { toast } from "@/hooks/use-toast";
 
 export default function Login() {
@@ -26,7 +26,8 @@ export default function Login() {
     
     // In a real app, we would store the user session
     localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("userName", data.email.split("@")[0]);
+    localStorage.setItem("userName", data.username);
+    localStorage.setItem("userGender", data.gender);
     
     // Navigate to location permission page
     navigate("/location-permission");
@@ -38,7 +39,7 @@ export default function Login() {
         isVisible ? "opacity-100" : "opacity-0"
       }`}
     >
-      <AuthForm mode="login" onSubmit={handleLogin} />
+      <SimpleAuthForm mode="login" onSubmit={handleLogin} />
     </div>
   );
 }

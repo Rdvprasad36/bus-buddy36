@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { Map } from "@/components/Map";
 import { NavBar } from "@/components/NavBar";
-import { Bus, Map as MapIcon, Share2, ArrowRight } from "lucide-react";
+import { Bus, Map as MapIcon, Share2, ArrowRight, User } from "lucide-react";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -22,11 +22,11 @@ export default function Index() {
     setIsLoggedIn(loggedIn);
     setUserName(storedUserName);
 
-    // Hide intro after animation completes
+    // Hide intro after animation completes - faster animation (3s -> 1s)
     const timer = setTimeout(() => {
       setShowIntro(false);
       setAnimationComplete(true);
-    }, 3000);
+    }, 1000);
     
     return () => clearTimeout(timer);
   }, []);
@@ -68,8 +68,8 @@ export default function Index() {
               <Map 
                 className="h-[400px] w-full mb-2" 
                 useGoogleMaps={true} 
-                location="visakhapatnam" 
                 allowEditing={false}
+                location="visakhapatnam" 
               />
               <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
                 Interactive map of Visakhapatnam bus routes
@@ -111,7 +111,7 @@ export default function Index() {
             </div>
           </section>
           
-          {/* Get Started */}
+          {/* Get Started - with violet colored text for signup/guest */}
           <section className="text-center mb-8">
             <div className="bg-blue-600 text-white rounded-xl p-8 shadow-lg">
               <h2 className="text-2xl font-bold mb-4">Ready to Get Started?</h2>
@@ -121,16 +121,18 @@ export default function Index() {
                   variant="secondary" 
                   size="lg"
                   onClick={() => navigate("/signup")}
+                  className="text-purple-700 bg-white hover:bg-purple-50"
                 >
+                  <User className="mr-2 h-4 w-4" />
                   Sign Up
                 </Button>
                 <Button 
                   variant="outline" 
                   size="lg"
-                  className="text-white border-white hover:bg-white/20"
+                  className="text-purple-300 border-white hover:bg-white/20"
                   onClick={() => navigate("/home")}
                 >
-                  Explore as Guest <ArrowRight className="ml-2 h-4 w-4" />
+                  Continue as Guest <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </div>

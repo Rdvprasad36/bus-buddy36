@@ -6,6 +6,7 @@ import { ShareLocation } from "@/components/ShareLocation";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { Map } from "@/components/Map";
 
 export default function Share() {
   const navigate = useNavigate();
@@ -53,6 +54,7 @@ export default function Share() {
     setIsSharing(false);
     setShowStopButton(false);
     toast.success("Location sharing stopped");
+    toast.success("Thank you for helping other commuters!");
     navigate(previousPage);
   };
 
@@ -77,6 +79,14 @@ export default function Share() {
             <p className="text-muted-foreground mb-8">
               Thank you for helping other commuters! Your location is being shared in real-time.
             </p>
+            
+            <div className="mb-6">
+              <Map 
+                className="h-[300px] w-full rounded-lg overflow-hidden" 
+                useGoogleMaps={true} 
+                location="visakhapatnam" 
+              />
+            </div>
             
             <Button 
               variant="destructive"

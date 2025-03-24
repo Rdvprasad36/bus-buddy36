@@ -1,8 +1,8 @@
 
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Menu } from "lucide-react";
+import { User, LogOut, Menu, ArrowLeft, ArrowRight } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +22,12 @@ interface NavBarProps {
 
 export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleBackNavigation = () => {
+    navigate(-1);
+  };
 
   return (
     <header className={cn(
@@ -29,9 +35,22 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
       className
     )}>
       <div className="container mx-auto flex items-center justify-between">
-        <Link to="/" className="bus-buddy-transition hover:opacity-80 flex items-center">
-          <Logo size="sm" withText withTagline={false} variant="horizontal" />
-        </Link>
+        <div className="flex items-center gap-2">
+          {location.pathname !== "/" && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleBackNavigation}
+              aria-label="Go back"
+              className="mr-1"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          )}
+          <Link to="/" className="bus-buddy-transition hover:opacity-80 flex items-center">
+            <Logo size="sm" withText withTagline={false} variant="horizontal" />
+          </Link>
+        </div>
 
         <div className="sm:hidden">
           <Button

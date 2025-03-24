@@ -12,6 +12,8 @@ import Home from "./pages/Home";
 import GetBus from "./pages/GetBus";
 import Share from "./pages/Share";
 import Data from "./pages/Data";
+import About from "./pages/About";
+import AddBus from "./pages/AddBus";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +33,8 @@ const App = () => (
           <Route path="/get" element={<GetBus />} />
           <Route path="/share" element={<Share />} />
           <Route path="/data" element={<Data />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/add-bus" element={<AddBus />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

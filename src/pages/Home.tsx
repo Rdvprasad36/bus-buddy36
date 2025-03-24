@@ -95,7 +95,9 @@ export default function Home() {
             {/* Main content - Map and bus details */}
             <div className="lg:col-span-3 space-y-4">
               <div className="relative">
-                <Map className="aspect-[4/3] md:aspect-[16/9] w-full rounded-lg overflow-hidden shadow-lg">
+                <Map className="aspect-[4/3] md:aspect-[16/9] w-full rounded-lg overflow-hidden shadow-lg"
+                     useGoogleMaps={true}
+                     location="visakhapatnam">
                   {isMapLoaded && buses.map(bus => (
                     <div 
                       key={bus.id}
@@ -148,6 +150,43 @@ export default function Home() {
                   <Share2 className="mr-2 h-5 w-5" />
                   <span>Share Location</span>
                 </Button>
+              </div>
+              
+              {/* Additional options */}
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-3">Bus Activity</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="bg-white dark:bg-gray-800 border rounded-lg p-4">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <Badge variant="outline">Live</Badge>
+                      Available Buses
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Buses currently being shared by other users
+                    </p>
+                    <div className="mt-3">
+                      <Badge className="mr-1">28C</Badge>
+                      <Badge className="mr-1">999</Badge>
+                      <Badge className="mr-1">400</Badge>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white dark:bg-gray-800 border rounded-lg p-4">
+                    <h4 className="font-medium mb-2 flex items-center gap-2">
+                      <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-300">
+                        Nearby
+                      </Badge>
+                      Nearby Buses
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Buses near your current location
+                    </p>
+                    <div className="mt-3">
+                      <Badge className="mr-1">1C</Badge>
+                      <Badge className="mr-1">28C</Badge>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             
