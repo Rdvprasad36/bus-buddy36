@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
@@ -39,7 +38,7 @@ export default function GetBus() {
   const sharingUsers = [
     { id: 1, busNumber: "28C", gender: "male", currentLocation: "Siripuram Junction", nextStop: "Jagadamba Center" },
     { id: 2, busNumber: "28C", gender: "female", currentLocation: "NAD Junction", nextStop: "Gopalapatnam" },
-    { id: a3, busNumber: "999", gender: "male", currentLocation: "Beach Road", nextStop: "RK Beach" },
+    { id: 3, busNumber: "999", gender: "male", currentLocation: "Beach Road", nextStop: "RK Beach" },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
