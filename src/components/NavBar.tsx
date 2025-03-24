@@ -29,6 +29,10 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
     navigate(-1);
   };
 
+  const handleForwardNavigation = () => {
+    navigate(1);
+  };
+
   return (
     <header className={cn(
       "fixed top-0 left-0 right-0 z-50 px-4 py-3 glass border-b", 
@@ -36,7 +40,7 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
     )}>
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
-          {location.pathname !== "/" && (
+          <div className="flex items-center">
             <Button
               variant="ghost"
               size="icon"
@@ -46,7 +50,16 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
-          )}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleForwardNavigation}
+              aria-label="Go forward"
+              className="mr-2"
+            >
+              <ArrowRight className="h-5 w-5" />
+            </Button>
+          </div>
           <Link to="/" className="bus-buddy-transition hover:opacity-80 flex items-center">
             <Logo size="sm" withText withTagline={false} variant="horizontal" />
           </Link>

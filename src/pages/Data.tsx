@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { 
@@ -13,9 +12,10 @@ import {
   TableRow, 
   TableCell 
 } from "@/components/ui/table";
-import { Search, Bus, Plus, MapPin } from "lucide-react";
+import { Search, Bus, Plus, MapPin, Filter } from "lucide-react";
 import { DepotBusList } from "@/components/DepotBusList";
 import { Card } from "@/components/ui/card";
+import { toast } from "@/hooks/use-toast";
 
 export default function Data() {
   const navigate = useNavigate();
@@ -41,6 +41,16 @@ export default function Data() {
     e.preventDefault();
     console.log("Searching for route:", fromLocation, "to", toLocation);
     // In a real app, this would filter buses based on from/to
+    if (!fromLocation || !toLocation) {
+      toast.error("Please enter both from and to locations");
+      return;
+    }
+    
+    toast.success(`Searching for buses from ${fromLocation} to ${toLocation}`);
+  };
+
+  const handleAddBus = () => {
+    navigate("/add-bus");
   };
 
   return (
@@ -57,7 +67,7 @@ export default function Data() {
               </p>
             </div>
             <Button 
-              onClick={() => navigate("/add-bus")} 
+              onClick={handleAddBus} 
               className="flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />

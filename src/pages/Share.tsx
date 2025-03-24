@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
 import { ShareLocation } from "@/components/ShareLocation";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { X, ThumbsUp } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Map } from "@/components/Map";
 
@@ -15,6 +15,7 @@ export default function Share() {
   const [userName, setUserName] = useState("");
   const [showStopButton, setShowStopButton] = useState(false);
   const [previousPage, setPreviousPage] = useState<string>("/home");
+  const [showThankYou, setShowThankYou] = useState(false);
   
   useEffect(() => {
     // Check if user is logged in
@@ -53,9 +54,14 @@ export default function Share() {
     localStorage.removeItem("isSharing");
     setIsSharing(false);
     setShowStopButton(false);
-    toast.success("Location sharing stopped");
-    toast.success("Thank you for helping other commuters!");
-    navigate(previousPage);
+    setShowThankYou(true);
+    
+    // Navigate back after showing thank you message
+    setTimeout(() => {
+      toast.success("Thank you for helping other commuters!");
+      setShowThankYou(false);
+      navigate(previousPage);
+    }, 3000);
   };
 
   return (
@@ -63,7 +69,23 @@ export default function Share() {
       <NavBar isLoggedIn={isLoggedIn} userName={userName} />
       
       <main className="flex-1 container mx-auto pt-24 pb-6 px-4">
-        {!isSharing ? (
+        {showThankYou ? (
+          <div className="max-w-md mx-auto text-center">
+            <div className="mb-8">
+              <div className="w-24 h-24 mx-auto bg-green-100 rounded-full flex items-center justify-center">
+                <ThumbsUp className="h-12 w-12 text-green-600" />
+              </div>
+            </div>
+            
+            <h1 className="text-2xl font-bold mb-2">Thank You!</h1>
+            <p className="text-muted-foreground mb-4">
+              Your contribution helps make bus travel better for everyone.
+            </p>
+            <p className="text-sm text-muted-foreground animate-pulse">
+              Redirecting you back...
+            </p>
+          </div>
+        ) : !isSharing ? (
           <ShareLocation onShareComplete={handleShareComplete} />
         ) : (
           <div className="max-w-md mx-auto text-center">

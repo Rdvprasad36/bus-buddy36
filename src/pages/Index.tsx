@@ -22,7 +22,7 @@ export default function Index() {
     setIsLoggedIn(loggedIn);
     setUserName(storedUserName);
 
-    // Hide intro after animation completes - faster animation (3s -> 1s)
+    // Hide intro after animation completes - faster animation (1s instead of 3s)
     const timer = setTimeout(() => {
       setShowIntro(false);
       setAnimationComplete(true);

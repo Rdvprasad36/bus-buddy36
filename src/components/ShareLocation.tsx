@@ -49,12 +49,33 @@ export function ShareLocation({
 
     setIsSharing(true);
     
-    // Simulate sharing process
-    setTimeout(() => {
+    // Request location permission
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // Success - we got the location
+          console.log("User location:", position.coords.latitude, position.coords.longitude);
+          
+          // Simulate sharing process
+          setTimeout(() => {
+            setIsSharing(false);
+            toast.success(`You are now sharing your location for bus ${busNumber}`);
+            onShareComplete();
+          }, 1500);
+        },
+        (error) => {
+          // Error getting location
+          console.error("Error getting location:", error);
+          setIsSharing(false);
+          toast.error("Failed to get your location. Please check your location settings.");
+        },
+        { enableHighAccuracy: true }
+      );
+    } else {
+      // Geolocation not supported
       setIsSharing(false);
-      toast.success(`You are now sharing your location for bus ${busNumber}`);
-      onShareComplete();
-    }, 2000);
+      toast.error("Your browser doesn't support geolocation");
+    }
   };
 
   return (
