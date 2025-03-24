@@ -11,6 +11,7 @@ import LocationPermission from "./pages/LocationPermission";
 import Home from "./pages/Home";
 import GetBus from "./pages/GetBus";
 import Share from "./pages/Share";
+import Data from "./pages/Data";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/home" element={<Home />} />
           <Route path="/get" element={<GetBus />} />
           <Route path="/share" element={<Share />} />
+          <Route path="/data" element={<Data />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

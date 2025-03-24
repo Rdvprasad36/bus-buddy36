@@ -61,7 +61,7 @@ export default function Index() {
             </p>
           </section>
           
-          {/* Andhra Pradesh Map */}
+          {/* Visakhapatnam Map */}
           <section className="mb-8">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-4 mb-6">
               <h2 className="text-xl font-semibold mb-4 text-blue-600">Visakhapatnam Bus Network</h2>
@@ -83,14 +83,14 @@ export default function Index() {
               <div className="mb-4 bg-blue-100 dark:bg-blue-900 p-3 rounded-full w-fit">
                 <Bus className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-blue-600">Get Bus Information</h3>
+              <h3 className="text-xl font-semibold mb-2 text-blue-600">Get Bus</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-4">Find real-time updates on bus locations, routes, and schedules.</p>
               <Button 
                 onClick={() => navigate("/get")}
                 className="w-full"
               >
                 <MapIcon className="mr-2 h-5 w-5" />
-                <span>Get Info</span>
+                <span>Get Bus</span>
               </Button>
             </div>
             

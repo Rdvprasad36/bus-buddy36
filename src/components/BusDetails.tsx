@@ -1,106 +1,102 @@
 
-import { cn } from "@/lib/utils";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Share2, Clock, MapPin, Bus } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Share2, Clock, MapPin, Navigation, Users } from "lucide-react";
-
-type BusCapacity = "empty" | "medium" | "full";
+import { cn } from "@/lib/utils";
 
 interface BusDetailsProps {
-  className?: string;
   busNumber: string;
   route: string;
-  capacity: BusCapacity;
+  capacity: "empty" | "medium" | "full";
   currentLocation: string;
   nextStop: string;
-  arrivalTime?: string;
+  arrivalTime: string;
+  className?: string;
   onShareLocation?: () => void;
+  onShowStops?: () => void;
 }
 
-export function BusDetails({ 
-  className, 
-  busNumber, 
+export function BusDetails({
+  busNumber,
   route,
   capacity,
   currentLocation,
   nextStop,
   arrivalTime,
-  onShareLocation
+  className,
+  onShareLocation,
+  onShowStops
 }: BusDetailsProps) {
-  const getCapacityColor = (capacity: BusCapacity) => {
+  const getCapacityColor = () => {
     switch (capacity) {
-      case "empty": return "bg-bus-empty border-gray-200 text-gray-700";
-      case "medium": return "bg-bus-medium border-amber-300 text-amber-800";
-      case "full": return "bg-bus-full border-red-500 text-white";
-      default: return "bg-gray-100 text-gray-700";
-    }
-  };
-
-  const getCapacityValue = (capacity: BusCapacity) => {
-    switch (capacity) {
-      case "empty": return 10;
-      case "medium": return 50;
-      case "full": return 90;
-      default: return 0;
+      case "empty": return "bg-green-100 text-green-700 border-green-200";
+      case "medium": return "bg-amber-100 text-amber-700 border-amber-200";
+      case "full": return "bg-red-100 text-red-700 border-red-200";
+      default: return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
 
   return (
-    <div className={cn("rounded-lg glass p-4 shadow-lg border animate-scale-in", className)}>
-      <div className="flex justify-between items-start mb-3">
-        <div>
-          <h2 className="text-2xl font-bold">{busNumber}</h2>
-          <p className="text-sm text-muted-foreground">{route}</p>
-        </div>
-        <Badge className={cn("border", getCapacityColor(capacity))}>
-          {capacity}
-        </Badge>
-      </div>
-      
-      <div className="space-y-4 mb-4">
-        <div className="flex items-center gap-2">
-          <MapPin className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm">
-            <span className="font-medium">Current location:</span> {currentLocation}
-          </span>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <Navigation className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm">
-            <span className="font-medium">Next stop:</span> {nextStop}
-          </span>
-        </div>
-        
-        {arrivalTime && (
+    <Card className={cn("bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg", className)}>
+      <CardContent className="p-4">
+        <div className="flex justify-between items-start mb-2">
           <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm">
-              <span className="font-medium">Estimated arrival:</span> {arrivalTime}
-            </span>
+            <Bus className="h-5 w-5 text-blue-600" />
+            <div>
+              <h3 className="font-bold text-lg">{busNumber}</h3>
+              <p className="text-xs text-muted-foreground">{route}</p>
+            </div>
           </div>
-        )}
-        
-        <div className="space-y-1">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium">Bus capacity</span>
-            <span className="text-xs">{getCapacityValue(capacity)}%</span>
-          </div>
-          <Progress value={getCapacityValue(capacity)} className="h-2" />
+          <Badge className={cn("border", getCapacityColor())}>
+            {capacity}
+          </Badge>
         </div>
-      </div>
-      
-      <div className="flex justify-between gap-2">
-        <Button variant="outline" className="w-full flex items-center gap-2">
-          <Users className="h-4 w-4" />
-          <span>Track</span>
-        </Button>
-        <Button onClick={onShareLocation} className="w-full flex items-center gap-2">
-          <Share2 className="h-4 w-4" />
-          <span>Share Location</span>
-        </Button>
-      </div>
-    </div>
+        
+        <div className="space-y-2 mb-3">
+          <div className="flex items-start gap-2">
+            <MapPin className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <div className="text-sm font-medium">Current Location</div>
+              <div className="text-xs text-muted-foreground">{currentLocation}</div>
+            </div>
+          </div>
+          
+          <div className="flex items-start gap-2">
+            <Clock className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <div className="text-sm font-medium">Next Stop: {nextStop}</div>
+              <div className="text-xs text-muted-foreground">Arriving in {arrivalTime}</div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex gap-2">
+          {onShowStops && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex-1" 
+              onClick={onShowStops}
+            >
+              <MapPin className="h-3.5 w-3.5 mr-1" />
+              <span>View Stops</span>
+            </Button>
+          )}
+          
+          {onShareLocation && (
+            <Button 
+              size="sm" 
+              className="flex-1 bg-blue-600 hover:bg-blue-700"
+              onClick={onShareLocation}
+            >
+              <Share2 className="h-3.5 w-3.5 mr-1" />
+              <span>Share Location</span>
+            </Button>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 }

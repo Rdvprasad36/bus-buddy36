@@ -60,6 +60,14 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
             </li>
             <li>
               <Link 
+                to="/data" 
+                className="text-sm font-medium hover:text-blue-600 bus-buddy-transition"
+              >
+                Data
+              </Link>
+            </li>
+            <li>
+              <Link 
                 to="/about" 
                 className="text-sm font-medium hover:text-blue-600 bus-buddy-transition"
               >

@@ -13,6 +13,7 @@ export default function Share() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
   const [showStopButton, setShowStopButton] = useState(false);
+  const [previousPage, setPreviousPage] = useState<string>("/home");
   
   useEffect(() => {
     // Check if user is logged in
@@ -27,6 +28,10 @@ export default function Share() {
       toast.error("Please log in to share your location");
       navigate("/login");
     }
+    
+    // Store previous page for navigation
+    const prevPage = localStorage.getItem("previousPage") || "/home";
+    setPreviousPage(prevPage);
     
     // Check if already sharing
     const alreadySharing = localStorage.getItem("isSharing") === "true";
@@ -48,7 +53,7 @@ export default function Share() {
     setIsSharing(false);
     setShowStopButton(false);
     toast.success("Location sharing stopped");
-    navigate("/home");
+    navigate(previousPage);
   };
 
   return (

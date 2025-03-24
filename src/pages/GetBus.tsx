@@ -66,7 +66,7 @@ export default function GetBus() {
       <main className="flex-1 container mx-auto pt-24 pb-6 px-4">
         <div className="max-w-xl mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2">Find Your Bus</h1>
+            <h1 className="text-3xl font-bold mb-2">Get Bus</h1>
             <p className="text-muted-foreground">
               Enter a bus number to get real-time location and arrival information
             </p>
