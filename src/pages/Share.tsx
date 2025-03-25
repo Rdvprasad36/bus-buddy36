@@ -16,6 +16,8 @@ export default function Share() {
   const [showStopButton, setShowStopButton] = useState(false);
   const [previousPage, setPreviousPage] = useState<string>("/home");
   const [showThankYou, setShowThankYou] = useState(false);
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const [sharingBusNumber, setSharingBusNumber] = useState("");
   
   useEffect(() => {
     // Check if user is logged in
@@ -37,21 +39,77 @@ export default function Share() {
     
     // Check if already sharing
     const alreadySharing = localStorage.getItem("isSharing") === "true";
+    const busNumber = localStorage.getItem("sharingBusNumber") || "";
+    
     if (alreadySharing) {
       setIsSharing(true);
       setShowStopButton(true);
+      setSharingBusNumber(busNumber);
+      
+      // Get current location for map
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setCurrentLocation({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            });
+          },
+          (error) => {
+            console.error("Error getting current location:", error);
+          }
+        );
+      }
     }
   }, [navigate]);
 
   const handleShareComplete = () => {
     // Store sharing status
-    localStorage.setItem("isSharing", "true");
     setIsSharing(true);
     setShowStopButton(true);
+    
+    // Get the bus number that's being shared
+    const busNumber = localStorage.getItem("sharingBusNumber") || "";
+    setSharingBusNumber(busNumber);
+    
+    // Get current location for map
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCurrentLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error("Error getting current location:", error);
+        }
+      );
+    }
   };
 
   const handleStopSharing = () => {
+    // Remove sharing data
     localStorage.removeItem("isSharing");
+    localStorage.removeItem("sharingBusNumber");
+    
+    // Remove from sharing users list
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      const sharingUsers = JSON.parse(localStorage.getItem("sharingUsers") || "[]");
+      const updatedUsers = sharingUsers.filter(user => user.userId !== userId);
+      localStorage.setItem("sharingUsers", JSON.stringify(updatedUsers));
+    }
+    
+    // Clear location watch if it exists
+    if (navigator.geolocation) {
+      const watchId = parseInt(localStorage.getItem("locationWatchId") || "0");
+      if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+        localStorage.removeItem("locationWatchId");
+      }
+    }
+    
     setIsSharing(false);
     setShowStopButton(false);
     setShowThankYou(true);
@@ -98,6 +156,9 @@ export default function Share() {
             </div>
             
             <h1 className="text-2xl font-bold mb-2">You're sharing your location</h1>
+            <p className="text-muted-foreground mb-2">
+              Bus Number: <span className="font-bold">{sharingBusNumber}</span>
+            </p>
             <p className="text-muted-foreground mb-8">
               Thank you for helping other commuters! Your location is being shared in real-time.
             </p>

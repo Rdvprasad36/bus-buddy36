@@ -40,26 +40,6 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
     )}>
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="flex items-center">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleBackNavigation}
-              aria-label="Go back"
-              className="mr-1"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleForwardNavigation}
-              aria-label="Go forward"
-              className="mr-2"
-            >
-              <ArrowRight className="h-5 w-5" />
-            </Button>
-          </div>
           <Link to="/" className="bus-buddy-transition hover:opacity-80 flex items-center">
             <Logo size="sm" withText withTagline={false} variant="horizontal" />
           </Link>
@@ -153,6 +133,29 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
             )}
           </ul>
         </nav>
+      </div>
+      
+      {/* Navigation arrows - moved to bottom of screen */}
+      <div className="fixed bottom-6 z-50 flex justify-between w-full px-6">
+        <Button
+          variant="secondary"
+          size="icon"
+          onClick={handleBackNavigation}
+          aria-label="Go back"
+          className="h-12 w-12 rounded-full shadow-lg bg-white/80 backdrop-blur-sm hover:bg-white/90"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        
+        <Button
+          variant="secondary"
+          size="icon"
+          onClick={handleForwardNavigation}
+          aria-label="Go forward"
+          className="h-12 w-12 rounded-full shadow-lg bg-white/80 backdrop-blur-sm hover:bg-white/90"
+        >
+          <ArrowRight className="h-5 w-5" />
+        </Button>
       </div>
     </header>
   );

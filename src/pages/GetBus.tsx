@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
 import { Input } from "@/components/ui/input";
@@ -15,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Map } from "@/components/Map";
-import { BusStops } from "@/components/BusStops";
+import { ViewBusStops } from "@/components/ViewBusStops";
 
 export default function GetBus() {
   const navigate = useNavigate();
@@ -26,6 +25,12 @@ export default function GetBus() {
   const [searchResult, setSearchResult] = useState<any>(null);
   const [showStops, setShowStops] = useState(false);
   
+  useEffect(() => {
+    // Check localStorage for sharing users on component mount
+    const savedSharingUsers = JSON.parse(localStorage.getItem("sharingUsers") || "[]");
+    console.log("Sharing users from localStorage:", savedSharingUsers);
+  }, []);
+  
   const popularBuses = [
     { number: "1C", route: "Pendurthi - RTC Complex" },
     { number: "28C", route: "Gajuwaka - Railway Station" },
@@ -35,12 +40,35 @@ export default function GetBus() {
     { number: "900", route: "Dwaraka Nagar - NAD Junction" },
   ];
 
-  // Mock sharing users
-  const sharingUsers = [
-    { id: 1, busNumber: "28C", gender: "male", currentLocation: "Siripuram Junction", nextStop: "Jagadamba Center" },
-    { id: 2, busNumber: "28C", gender: "female", currentLocation: "NAD Junction", nextStop: "Gopalapatnam" },
-    { id: 3, busNumber: "999", gender: "male", currentLocation: "Beach Road", nextStop: "RK Beach" },
-  ];
+  // Get real sharing users from localStorage if available, otherwise use mock data
+  const getSharingUsers = () => {
+    const savedSharingUsers = JSON.parse(localStorage.getItem("sharingUsers") || "[]");
+    
+    // Format saved sharing users to match the expected format
+    const formattedSharingUsers = savedSharingUsers.map((user, index) => ({
+      id: user.userId || index + 1,
+      busNumber: user.busNumber,
+      gender: user.gender || "male",
+      currentLocation: user.currentLocation || "Unknown Location",
+      nextStop: user.nextStop || "Next Stop",
+      userName: user.userName || "Anonymous",
+      latitude: user.latitude,
+      longitude: user.longitude,
+      timestamp: user.timestamp
+    }));
+    
+    // If we have real sharing users, use them
+    if (formattedSharingUsers.length > 0) {
+      return formattedSharingUsers;
+    }
+    
+    // Otherwise, use mock data
+    return [
+      { id: 1, busNumber: "28C", gender: "male", currentLocation: "Siripuram Junction", nextStop: "Jagadamba Center", userName: "User1" },
+      { id: 2, busNumber: "28C", gender: "female", currentLocation: "NAD Junction", nextStop: "Gopalapatnam", userName: "User2" },
+      { id: 3, busNumber: "999", gender: "male", currentLocation: "Beach Road", nextStop: "RK Beach", userName: "User3" },
+    ];
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,6 +79,9 @@ export default function GetBus() {
     }
     
     setIsSearching(true);
+    
+    // Get sharing users
+    const sharingUsers = getSharingUsers();
     
     // Simulate search process
     setTimeout(() => {
@@ -82,9 +113,12 @@ export default function GetBus() {
   };
 
   const handleViewBusDetails = (userId: number) => {
+    const sharingUsers = getSharingUsers();
     const user = sharingUsers.find(u => u.id === userId);
+    
     if (user) {
       toast.success(`Viewing real-time location for bus ${user.busNumber}`);
+      // In a real app, this would show the live location on a map
       navigate("/home");
     }
   };
@@ -105,23 +139,10 @@ export default function GetBus() {
       <main className="flex-1 container mx-auto pt-24 pb-6 px-4">
         <div className="max-w-xl mx-auto">
           {showStops && searchResult ? (
-            <div>
-              <div className="mb-4">
-                <Button 
-                  variant="ghost" 
-                  onClick={() => setShowStops(false)}
-                  className="flex items-center gap-2"
-                >
-                  <MapPin className="h-4 w-4" />
-                  <span>Back to Bus Details</span>
-                </Button>
-              </div>
-              
-              <BusStops 
-                busNumber={searchResult.busNumber} 
-                onBackToMap={() => setShowStops(false)} 
-              />
-            </div>
+            <ViewBusStops 
+              busNumber={searchResult.busNumber} 
+              onBack={() => setShowStops(false)} 
+            />
           ) : searchResult ? (
             <div>
               <div className="mb-4">
@@ -146,7 +167,7 @@ export default function GetBus() {
                 <Map 
                   className="h-[300px] w-full rounded-lg overflow-hidden mb-4" 
                   useGoogleMaps={true} 
-                  location="visakhapatnam" 
+                  location={`bus ${searchResult.busNumber} visakhapatnam`} 
                 />
                 
                 <div className="mb-2">
@@ -157,7 +178,7 @@ export default function GetBus() {
                     className="flex items-center gap-2"
                   >
                     <MapPin className="h-4 w-4" />
-                    <span>View Bus Stops</span>
+                    <span>View All Bus Stops</span>
                   </Button>
                 </div>
                 
@@ -173,7 +194,7 @@ export default function GetBus() {
                               <User className={`h-5 w-5 ${user.gender === 'male' ? 'text-blue-600' : user.gender === 'female' ? 'text-pink-600' : 'text-purple-600'}`} />
                             </div>
                             <div>
-                              <div className="font-medium">{user.gender === 'male' ? 'Male' : user.gender === 'female' ? 'Female' : 'Transgender'} Commuter</div>
+                              <div className="font-medium">{user.userName || (user.gender === 'male' ? 'Male' : user.gender === 'female' ? 'Female' : 'Transgender')} Commuter</div>
                               <div className="text-sm text-muted-foreground flex items-center gap-1">
                                 <MapPin className="h-3 w-3 inline" />
                                 {user.currentLocation}

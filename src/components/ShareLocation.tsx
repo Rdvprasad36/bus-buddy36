@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +30,35 @@ interface ShareLocationProps {
   onShareComplete: () => void;
 }
 
+const simulateFirebaseUpdate = (userId, busNumber, latitude, longitude, capacity, userName, gender) => {
+  console.log("Updating location in Firebase:", { userId, busNumber, latitude, longitude, capacity });
+  
+  const sharingUsers = JSON.parse(localStorage.getItem("sharingUsers") || "[]");
+  
+  const existingUserIndex = sharingUsers.findIndex(user => user.userId === userId);
+  
+  const userInfo = {
+    userId,
+    busNumber,
+    latitude,
+    longitude,
+    capacity,
+    userName,
+    gender,
+    timestamp: new Date().toISOString(),
+    currentLocation: "Current Location",
+    nextStop: "Next Stop"
+  };
+  
+  if (existingUserIndex >= 0) {
+    sharingUsers[existingUserIndex] = userInfo;
+  } else {
+    sharingUsers.push(userInfo);
+  }
+  
+  localStorage.setItem("sharingUsers", JSON.stringify(sharingUsers));
+};
+
 export function ShareLocation({ 
   className, 
   onShareComplete 
@@ -38,6 +66,25 @@ export function ShareLocation({
   const [isSharing, setIsSharing] = useState(false);
   const [busNumber, setBusNumber] = useState("");
   const [capacity, setCapacity] = useState("medium");
+  const [locationWatchId, setLocationWatchId] = useState<number | null>(null);
+  
+  const userId = localStorage.getItem("userId") || `user_${Math.floor(Math.random() * 10000)}`;
+  const userName = localStorage.getItem("userName") || "Anonymous";
+  const gender = localStorage.getItem("gender") || "not-specified";
+  
+  useEffect(() => {
+    if (!localStorage.getItem("userId")) {
+      localStorage.setItem("userId", userId);
+    }
+  }, [userId]);
+  
+  useEffect(() => {
+    return () => {
+      if (locationWatchId !== null) {
+        navigator.geolocation.clearWatch(locationWatchId);
+      }
+    };
+  }, [locationWatchId]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,22 +96,38 @@ export function ShareLocation({
 
     setIsSharing(true);
     
-    // Request location permission
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          // Success - we got the location
-          console.log("User location:", position.coords.latitude, position.coords.longitude);
+          const { latitude, longitude } = position.coords;
+          console.log("User location:", latitude, longitude);
           
-          // Simulate sharing process
+          simulateFirebaseUpdate(userId, busNumber, latitude, longitude, capacity, userName, gender);
+          
+          const watchId = navigator.geolocation.watchPosition(
+            (newPosition) => {
+              const { latitude, longitude } = newPosition.coords;
+              simulateFirebaseUpdate(userId, busNumber, latitude, longitude, capacity, userName, gender);
+            },
+            (error) => {
+              console.error("Error watching position:", error);
+            },
+            { enableHighAccuracy: true, maximumAge: 30000, timeout: 27000 }
+          );
+          
+          setLocationWatchId(watchId);
+          
           setTimeout(() => {
             setIsSharing(false);
             toast.success(`You are now sharing your location for bus ${busNumber}`);
+            
+            localStorage.setItem("isSharing", "true");
+            localStorage.setItem("sharingBusNumber", busNumber);
+            
             onShareComplete();
           }, 1500);
         },
         (error) => {
-          // Error getting location
           console.error("Error getting location:", error);
           setIsSharing(false);
           toast.error("Failed to get your location. Please check your location settings.");
@@ -72,7 +135,6 @@ export function ShareLocation({
         { enableHighAccuracy: true }
       );
     } else {
-      // Geolocation not supported
       setIsSharing(false);
       toast.error("Your browser doesn't support geolocation");
     }

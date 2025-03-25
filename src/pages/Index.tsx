@@ -22,6 +22,12 @@ export default function Index() {
     setIsLoggedIn(loggedIn);
     setUserName(storedUserName);
 
+    // If already logged in, redirect to home page
+    if (loggedIn) {
+      navigate("/home");
+      return;
+    }
+
     // Hide intro after animation completes - faster animation (1s instead of 3s)
     const timer = setTimeout(() => {
       setShowIntro(false);
@@ -29,7 +35,7 @@ export default function Index() {
     }, 1000);
     
     return () => clearTimeout(timer);
-  }, []);
+  }, [navigate]);
 
   if (showIntro) {
     return (
