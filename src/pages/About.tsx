@@ -13,25 +13,25 @@ export default function About() {
   
   const teamMembers = [
     {
-      name: "Ravi Kumar",
+      name: "R.D.V. Prasad",
       role: "Project Lead",
-      bio: "Transportation expert with over 8 years of experience in public transit solutions",
+      bio: "Transportation expert with a passion for public transit solutions",
       image: "https://randomuser.me/api/portraits/men/32.jpg"
     },
     {
-      name: "Priya Sharma",
+      name: "S. Vamsi Naidu",
       role: "UX Designer",
       bio: "Passionate about creating accessible interfaces for public services",
-      image: "https://randomuser.me/api/portraits/women/44.jpg"
+      image: "https://randomuser.me/api/portraits/men/44.jpg"
     },
     {
-      name: "Arjun Reddy",
+      name: "V. Venkata Danush",
       role: "Mobile Developer",
       bio: "Specialized in location-based services and real-time tracking applications",
       image: "https://randomuser.me/api/portraits/men/66.jpg"
     },
     {
-      name: "Meera Patel",
+      name: "V. Akshata Chandra",
       role: "Data Scientist",
       bio: "Working with transportation data to optimize routes and predict arrival times",
       image: "https://randomuser.me/api/portraits/women/65.jpg"
@@ -86,6 +86,16 @@ export default function About() {
                 </div>
               </div>
             ))}
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-12">
+            <h2 className="text-2xl font-bold mb-4 text-blue-600">About Our Team</h2>
+            <p className="mb-4">
+              We are all freshers from the Department of AI & Data Science in Vignan's Institute of Information and Technology. Bus Buddy represents our combined passion for using technology to solve real-world problems that affect our community.
+            </p>
+            <p>
+              Our diverse skills in UX design, mobile development, and data science have come together to create an application that we hope will make a positive impact on daily commuters in Visakhapatnam.
+            </p>
           </div>
 
           <div className="flex justify-center space-x-4">

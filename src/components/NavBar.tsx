@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 interface NavBarProps {
   isLoggedIn?: boolean;
@@ -31,6 +32,21 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
 
   const handleForwardNavigation = () => {
     navigate(1);
+  };
+
+  const handleLogout = () => {
+    // Clear all login information from localStorage
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userGender");
+    localStorage.removeItem("sharingUsers");
+    
+    // Show toast notification
+    toast.success("Logged out successfully");
+    
+    // Navigate to index page
+    navigate("/");
   };
 
   return (
@@ -115,11 +131,12 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link to="/logout" className="cursor-pointer w-full flex items-center text-destructive">
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>Log out</span>
-                      </Link>
+                    <DropdownMenuItem 
+                      className="cursor-pointer w-full flex items-center text-destructive"
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

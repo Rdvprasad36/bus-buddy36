@@ -8,8 +8,9 @@ import {
   CardTitle 
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Clock, Bus, ArrowRight } from "lucide-react";
+import { MapPin, Clock, Bus, ArrowRight, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Map } from "@/components/Map";
 
 interface BusStopsProps {
   busNumber: string;
@@ -78,6 +79,14 @@ export function BusStops({ busNumber, onBackToMap }: BusStopsProps) {
         </p>
       </div>
       
+      <Map 
+        className="h-[200px] w-full rounded-lg overflow-hidden mb-4" 
+        useGoogleMaps={true}
+        showBusStopsOnly={true}
+        busNumber={busNumber}
+        location={`bus ${busNumber} stops visakhapatnam`}
+      />
+      
       <div className="relative">
         <div className="absolute left-4 top-[60px] bottom-6 w-0.5 bg-gray-200 dark:bg-gray-700 z-0"></div>
         
@@ -87,7 +96,7 @@ export function BusStops({ busNumber, onBackToMap }: BusStopsProps) {
               key={index} 
               className={`ml-6 bus-buddy-transition ${
                 stop.status === "arrived" 
-                  ? "opacity-70" 
+                  ? "border-green-200 bg-green-50 dark:bg-green-900/20 dark:border-green-800" 
                   : stop.status === "next" 
                     ? "border-blue-500 shadow-md" 
                     : ""
@@ -97,7 +106,7 @@ export function BusStops({ busNumber, onBackToMap }: BusStopsProps) {
                 <div 
                   className={`w-3 h-3 rounded-full ${
                     stop.status === "arrived" 
-                      ? "bg-gray-400 dark:bg-gray-600" 
+                      ? "bg-green-500 dark:bg-green-400" 
                       : stop.status === "next" 
                         ? "animate-ping-slow w-4 h-4 bg-blue-500" 
                         : "bg-gray-300 dark:bg-gray-700"
@@ -109,7 +118,11 @@ export function BusStops({ busNumber, onBackToMap }: BusStopsProps) {
                 <div>
                   <div className="font-medium">{stop.name}</div>
                   <div className="text-sm text-muted-foreground flex items-center">
-                    <Clock className="h-3 w-3 mr-1" />
+                    {stop.status === "arrived" ? (
+                      <Check className="h-3 w-3 mr-1 text-green-500" />
+                    ) : (
+                      <Clock className="h-3 w-3 mr-1" />
+                    )}
                     {stop.time}
                   </div>
                 </div>
@@ -118,7 +131,9 @@ export function BusStops({ busNumber, onBackToMap }: BusStopsProps) {
                   <Badge className="bg-blue-500">Next Stop</Badge>
                 )}
                 {stop.status === "arrived" && (
-                  <Badge variant="outline">Passed</Badge>
+                  <Badge variant="outline" className="border-green-300 bg-green-100 text-green-800">
+                    Passed
+                  </Badge>
                 )}
                 {stop.status === "upcoming" && (
                   <Badge variant="secondary">Upcoming</Badge>

@@ -15,6 +15,8 @@ interface MapProps {
   allowEditing?: boolean;
   useGoogleMaps?: boolean;
   location?: string;
+  showBusStopsOnly?: boolean;
+  busNumber?: string;
 }
 
 // Andhra Pradesh coordinates
@@ -27,7 +29,9 @@ export function Map({
   children,
   allowEditing = true,
   useGoogleMaps = false,
-  location = "visakhapatnam"
+  location = "visakhapatnam",
+  showBusStopsOnly = false,
+  busNumber
 }: MapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<mapboxgl.Map | null>(null);
@@ -121,6 +125,25 @@ export function Map({
   };
 
   if (useGoogleMaps) {
+    // Append bus routes and stops parameters if requested
+    let googleMapsSrc = `https://www.google.com/maps/embed/v1/place?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=${encodeURIComponent(location)}`;
+    
+    // Add bus number to search if provided
+    if (busNumber) {
+      googleMapsSrc = `https://www.google.com/maps/embed/v1/place?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=bus%20${encodeURIComponent(busNumber)}%20route%20${encodeURIComponent(location)}`;
+    }
+    
+    // If we want to show only bus stops
+    if (showBusStopsOnly) {
+      googleMapsSrc = `https://www.google.com/maps/embed/v1/search?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=bus%20stops%20in%20${encodeURIComponent(location)}`;
+      
+      if (busNumber) {
+        googleMapsSrc = `https://www.google.com/maps/embed/v1/search?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=bus%20${encodeURIComponent(busNumber)}%20stops%20in%20${encodeURIComponent(location)}`;
+      }
+    }
+    
+    googleMapsSrc += "&zoom=14&maptype=roadmap";
+    
     return (
       <div className={cn("relative rounded-lg overflow-hidden", className)}>
         {!isLoaded ? (
@@ -129,7 +152,7 @@ export function Map({
           <iframe 
             width="100%" 
             height="100%" 
-            src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=${encodeURIComponent(location)}&zoom=14&maptype=roadmap`} 
+            src={googleMapsSrc} 
             style={{ border: 0 }} 
             loading="lazy" 
             allowFullScreen
