@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { MapPin, Clock, Bus, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Map } from "@/components/Map";
 
 interface BusStopsProps {
   busNumber: string;
@@ -77,6 +78,13 @@ export function BusStops({ busNumber, onBackToMap }: BusStopsProps) {
           Current stops and estimated arrival times
         </p>
       </div>
+      
+      <Map 
+        className="h-[200px] w-full rounded-lg overflow-hidden mb-4" 
+        useGoogleMaps={true} 
+        busNumber={busNumber}
+        showBusStops={true}
+      />
       
       <div className="relative">
         <div className="absolute left-4 top-[60px] bottom-6 w-0.5 bg-gray-200 dark:bg-gray-700 z-0"></div>

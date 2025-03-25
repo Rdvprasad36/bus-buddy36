@@ -2,8 +2,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, ArrowLeft, ArrowRight } from "lucide-react";
+import { MapPin, ArrowLeft, ArrowRight, Bus, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Map } from "@/components/Map";
 
 interface ViewBusStopsProps {
   busNumber: string;
@@ -16,60 +17,60 @@ export function ViewBusStops({ busNumber, onBack }: ViewBusStopsProps) {
   // This would come from a database in a real app
   const busStops = {
     "1C": [
-      { name: "Pendurthi Bus Station", time: "6:00 AM", distance: "0 km" },
-      { name: "Vepagunta", time: "6:10 AM", distance: "3.2 km" },
-      { name: "Gopalapatnam", time: "6:25 AM", distance: "7.5 km" },
-      { name: "NAD Junction", time: "6:35 AM", distance: "10.1 km" },
-      { name: "Kancharapalem", time: "6:50 AM", distance: "13.4 km" },
-      { name: "Dwaraka Bus Station", time: "7:05 AM", distance: "16.8 km" },
-      { name: "Jagadamba Junction", time: "7:15 AM", distance: "18.2 km" },
-      { name: "RTC Complex", time: "7:30 AM", distance: "21.5 km" },
+      { name: "Pendurthi Bus Station", time: "6:00 AM", distance: "0 km", passed: true },
+      { name: "Vepagunta", time: "6:10 AM", distance: "3.2 km", passed: true },
+      { name: "Gopalapatnam", time: "6:25 AM", distance: "7.5 km", passed: true },
+      { name: "NAD Junction", time: "6:35 AM", distance: "10.1 km", passed: false, next: true },
+      { name: "Kancharapalem", time: "6:50 AM", distance: "13.4 km", passed: false },
+      { name: "Dwaraka Bus Station", time: "7:05 AM", distance: "16.8 km", passed: false },
+      { name: "Jagadamba Junction", time: "7:15 AM", distance: "18.2 km", passed: false },
+      { name: "RTC Complex", time: "7:30 AM", distance: "21.5 km", passed: false },
     ],
     "28C": [
-      { name: "Gajuwaka Bus Station", time: "6:30 AM", distance: "0 km" },
-      { name: "Scindia", time: "6:40 AM", distance: "2.8 km" },
-      { name: "BHPV", time: "6:50 AM", distance: "5.1 km" },
-      { name: "NAD Junction", time: "7:05 AM", distance: "8.7 km" },
-      { name: "Kancharapalem", time: "7:20 AM", distance: "12.0 km" },
-      { name: "Dwaraka Bus Station", time: "7:35 AM", distance: "15.4 km" },
-      { name: "Jagadamba Junction", time: "7:45 AM", distance: "16.8 km" },
-      { name: "Railway Station", time: "8:00 AM", distance: "19.3 km" },
+      { name: "Gajuwaka Bus Station", time: "6:30 AM", distance: "0 km", passed: true },
+      { name: "Scindia", time: "6:40 AM", distance: "2.8 km", passed: true },
+      { name: "BHPV", time: "6:50 AM", distance: "5.1 km", passed: false, next: true },
+      { name: "NAD Junction", time: "7:05 AM", distance: "8.7 km", passed: false },
+      { name: "Kancharapalem", time: "7:20 AM", distance: "12.0 km", passed: false },
+      { name: "Dwaraka Bus Station", time: "7:35 AM", distance: "15.4 km", passed: false },
+      { name: "Jagadamba Junction", time: "7:45 AM", distance: "16.8 km", passed: false },
+      { name: "Railway Station", time: "8:00 AM", distance: "19.3 km", passed: false },
     ],
     "999": [
-      { name: "Simhachalam", time: "7:00 AM", distance: "0 km" },
-      { name: "Adavivaram", time: "7:15 AM", distance: "3.5 km" },
-      { name: "Asilmetta", time: "7:30 AM", distance: "7.8 km" },
-      { name: "Jagadamba Junction", time: "7:40 AM", distance: "9.2 km" },
-      { name: "RTC Complex", time: "7:55 AM", distance: "12.5 km" },
-      { name: "MVP Colony", time: "8:10 AM", distance: "16.1 km" },
-      { name: "Beach Road", time: "8:25 AM", distance: "19.4 km" },
+      { name: "Simhachalam", time: "7:00 AM", distance: "0 km", passed: true },
+      { name: "Adavivaram", time: "7:15 AM", distance: "3.5 km", passed: false, next: true },
+      { name: "Asilmetta", time: "7:30 AM", distance: "7.8 km", passed: false },
+      { name: "Jagadamba Junction", time: "7:40 AM", distance: "9.2 km", passed: false },
+      { name: "RTC Complex", time: "7:55 AM", distance: "12.5 km", passed: false },
+      { name: "MVP Colony", time: "8:10 AM", distance: "16.1 km", passed: false },
+      { name: "Beach Road", time: "8:25 AM", distance: "19.4 km", passed: false },
     ],
     "400": [
-      { name: "Madhurawada", time: "6:15 AM", distance: "0 km" },
-      { name: "Rushikonda", time: "6:30 AM", distance: "4.2 km" },
-      { name: "MVP Colony", time: "6:45 AM", distance: "8.9 km" },
-      { name: "Jagadamba Junction", time: "7:00 AM", distance: "12.3 km" },
-      { name: "RTC Complex", time: "7:15 AM", distance: "15.6 km" },
-      { name: "Steel Plant", time: "7:45 AM", distance: "25.8 km" },
+      { name: "Madhurawada", time: "6:15 AM", distance: "0 km", passed: true },
+      { name: "Rushikonda", time: "6:30 AM", distance: "4.2 km", passed: true },
+      { name: "MVP Colony", time: "6:45 AM", distance: "8.9 km", passed: false, next: true },
+      { name: "Jagadamba Junction", time: "7:00 AM", distance: "12.3 km", passed: false },
+      { name: "RTC Complex", time: "7:15 AM", distance: "15.6 km", passed: false },
+      { name: "Steel Plant", time: "7:45 AM", distance: "25.8 km", passed: false },
     ],
     "37G": [
-      { name: "Gopalapatnam", time: "6:45 AM", distance: "0 km" },
-      { name: "NAD Junction", time: "7:00 AM", distance: "4.3 km" },
-      { name: "Kancharapalem", time: "7:15 AM", distance: "7.6 km" },
-      { name: "Dwaraka Bus Station", time: "7:30 AM", distance: "11.0 km" },
-      { name: "Jagadamba Junction", time: "7:40 AM", distance: "12.4 km" },
-      { name: "RTC Complex", time: "7:55 AM", distance: "15.7 km" },
-      { name: "Rushikonda", time: "8:25 AM", distance: "24.6 km" },
+      { name: "Gopalapatnam", time: "6:45 AM", distance: "0 km", passed: true },
+      { name: "NAD Junction", time: "7:00 AM", distance: "4.3 km", passed: true },
+      { name: "Kancharapalem", time: "7:15 AM", distance: "7.6 km", passed: false, next: true },
+      { name: "Dwaraka Bus Station", time: "7:30 AM", distance: "11.0 km", passed: false },
+      { name: "Jagadamba Junction", time: "7:40 AM", distance: "12.4 km", passed: false },
+      { name: "RTC Complex", time: "7:55 AM", distance: "15.7 km", passed: false },
+      { name: "Rushikonda", time: "8:25 AM", distance: "24.6 km", passed: false },
     ]
   };
   
   // Default stops if the bus number is not found
   const defaultStops = [
-    { name: "Terminal", time: "Start", distance: "0 km" },
-    { name: "Stop 1", time: "~10 min", distance: "~3 km" },
-    { name: "Stop 2", time: "~20 min", distance: "~7 km" },
-    { name: "Stop 3", time: "~30 min", distance: "~12 km" },
-    { name: "Final Stop", time: "End", distance: "~15 km" },
+    { name: "Terminal", time: "Start", distance: "0 km", passed: true },
+    { name: "Stop 1", time: "~10 min", distance: "~3 km", passed: true },
+    { name: "Stop 2", time: "~20 min", distance: "~7 km", passed: false, next: true },
+    { name: "Stop 3", time: "~30 min", distance: "~12 km", passed: false },
+    { name: "Final Stop", time: "End", distance: "~15 km", passed: false },
   ];
   
   const stops = busStops[busNumber] || defaultStops;
@@ -103,9 +104,16 @@ export function ViewBusStops({ busNumber, onBack }: ViewBusStopsProps) {
         </Badge>
       </div>
       
+      <Map 
+        className="h-[200px] w-full rounded-lg overflow-hidden mb-4" 
+        useGoogleMaps={true} 
+        busNumber={busNumber}
+        showBusStops={true}
+      />
+      
       <Card>
         <CardHeader>
-          <CardTitle className="text-center">Bus Stops</CardTitle>
+          <CardTitle className="text-center">Bus Stops Status</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="relative">
@@ -119,16 +127,41 @@ export function ViewBusStops({ busNumber, onBack }: ViewBusStopsProps) {
                   key={index} 
                   className={`flex items-start mb-6 ${index === currentStopIndex ? 'opacity-100' : 'opacity-50'}`}
                 >
-                  <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${index === currentStopIndex ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}>
+                  <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center 
+                    ${stop.passed ? 'bg-gray-100 text-gray-500' : 
+                     stop.next ? 'bg-blue-100 text-blue-600 animate-pulse' : 
+                     'bg-green-100 text-green-500'}`}
+                  >
                     <MapPin className="h-6 w-6" />
                   </div>
                   <div className="ml-4">
-                    <h3 className={`text-lg font-semibold ${index === currentStopIndex ? 'text-blue-600' : ''}`}>
+                    <h3 className={`text-lg font-semibold
+                      ${stop.passed ? 'text-gray-500' : 
+                       stop.next ? 'text-blue-600' : 
+                       'text-green-600'}`}
+                    >
                       {stop.name}
                     </h3>
                     <div className="flex gap-4 text-sm text-muted-foreground mt-1">
                       <span>Time: {stop.time}</span>
                       <span>Distance: {stop.distance}</span>
+                    </div>
+                    <div className="mt-2">
+                      {stop.passed && (
+                        <Badge variant="outline" className="bg-gray-100">
+                          Passed
+                        </Badge>
+                      )}
+                      {stop.next && (
+                        <Badge className="bg-blue-500">
+                          Next Stop
+                        </Badge>
+                      )}
+                      {!stop.passed && !stop.next && (
+                        <Badge variant="outline" className="bg-green-50">
+                          Upcoming
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 </div>

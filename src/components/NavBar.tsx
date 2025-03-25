@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 interface NavBarProps {
   isLoggedIn?: boolean;
@@ -31,6 +32,24 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
 
   const handleForwardNavigation = () => {
     navigate(1);
+  };
+
+  const handleLogout = () => {
+    // Clear all authentication data
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userId");
+    
+    // Clear sharing data if any
+    localStorage.removeItem("isSharing");
+    localStorage.removeItem("sharingBusNumber");
+    localStorage.removeItem("locationWatchId");
+    
+    // Show success message
+    toast.success("Logged out successfully");
+    
+    // Redirect to index page
+    navigate("/");
   };
 
   return (
@@ -115,11 +134,12 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link to="/logout" className="cursor-pointer w-full flex items-center text-destructive">
-                        <LogOut className="mr-2 h-4 w-4" />
-                        <span>Log out</span>
-                      </Link>
+                    <DropdownMenuItem 
+                      className="cursor-pointer w-full flex items-center text-destructive"
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -135,8 +155,8 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
         </nav>
       </div>
       
-      {/* Navigation arrows - moved to bottom of screen */}
-      <div className="fixed bottom-6 z-50 flex justify-between w-full px-6">
+      {/* Navigation arrows - moved to bottom corners of screen */}
+      <div className="fixed bottom-6 z-50 w-full px-6 flex justify-between">
         <Button
           variant="secondary"
           size="icon"

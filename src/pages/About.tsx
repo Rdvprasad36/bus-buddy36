@@ -13,25 +13,25 @@ export default function About() {
   
   const teamMembers = [
     {
-      name: "Ravi Kumar",
+      name: "R.D.V. Prasad",
       role: "Project Lead",
-      bio: "Transportation expert with over 8 years of experience in public transit solutions",
+      bio: "Transportation expert with focus on developing innovative transit solutions for local communities",
       image: "https://randomuser.me/api/portraits/men/32.jpg"
     },
     {
-      name: "Priya Sharma",
+      name: "S. Vamsi Naidu",
       role: "UX Designer",
       bio: "Passionate about creating accessible interfaces for public services",
-      image: "https://randomuser.me/api/portraits/women/44.jpg"
+      image: "https://randomuser.me/api/portraits/men/44.jpg"
     },
     {
-      name: "Arjun Reddy",
+      name: "V. Venkata Danush",
       role: "Mobile Developer",
       bio: "Specialized in location-based services and real-time tracking applications",
       image: "https://randomuser.me/api/portraits/men/66.jpg"
     },
     {
-      name: "Meera Patel",
+      name: "V. Akshata Chandra",
       role: "Data Scientist",
       bio: "Working with transportation data to optimize routes and predict arrival times",
       image: "https://randomuser.me/api/portraits/women/65.jpg"
@@ -69,6 +69,9 @@ export default function About() {
           </div>
           
           <h2 className="text-2xl font-bold mb-6 text-center">Meet Our Team</h2>
+          <p className="text-center mb-6 text-muted-foreground">
+            We are all freshers of the Department of AI & Data Science in Vignan's Institute of Information and Technology
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {teamMembers.map((member, index) => (
               <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
