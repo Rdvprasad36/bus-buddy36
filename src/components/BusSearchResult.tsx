@@ -43,9 +43,7 @@ export function BusSearchResult({
         <Map 
           className="h-[300px] w-full rounded-lg overflow-hidden mb-4" 
           useGoogleMaps={true} 
-          location={`bus ${busNumber} visakhapatnam`}
-          busNumber={busNumber}
-          showBusStops={true}
+          location={`bus ${busNumber} visakhapatnam`} 
         />
         
         <div className="mb-2">
