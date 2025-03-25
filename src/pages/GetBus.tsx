@@ -1,24 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { Bus, Search, MapPin, User } from "lucide-react";
-import { 
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Map } from "@/components/Map";
 import { ViewBusStops } from "@/components/ViewBusStops";
+import { BusSearch } from "@/components/BusSearch";
+import { PopularBuses } from "@/components/PopularBuses";
+import { BusSearchResult } from "@/components/BusSearchResult";
 
 export default function GetBus() {
   const navigate = useNavigate();
-  const [busNumber, setBusNumber] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
   const [userName, setUserName] = useState(localStorage.getItem("userName") || "");
@@ -70,14 +60,7 @@ export default function GetBus() {
     ];
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!busNumber) {
-      toast.error("Please enter a bus number");
-      return;
-    }
-    
+  const handleSearch = (busNumber: string) => {
     setIsSearching(true);
     
     // Get sharing users
@@ -123,6 +106,10 @@ export default function GetBus() {
     }
   };
 
+  const handleBusSelect = (busNumber: string) => {
+    handleSearch(busNumber);
+  };
+
   const handleBackToSearch = () => {
     setSearchResult(null);
     setShowStops(false);
@@ -144,74 +131,13 @@ export default function GetBus() {
               onBack={() => setShowStops(false)} 
             />
           ) : searchResult ? (
-            <div>
-              <div className="mb-4">
-                <Button 
-                  variant="ghost" 
-                  onClick={handleBackToSearch}
-                  className="flex items-center gap-2"
-                >
-                  <Search className="h-4 w-4" />
-                  <span>Back to Search</span>
-                </Button>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="text-center mb-4">
-                  <h2 className="text-2xl font-bold">Bus {searchResult.busNumber}</h2>
-                  <p className="text-muted-foreground">
-                    {searchResult.sharingUsers.length} users currently sharing location
-                  </p>
-                </div>
-                
-                <Map 
-                  className="h-[300px] w-full rounded-lg overflow-hidden mb-4" 
-                  useGoogleMaps={true} 
-                  location={`bus ${searchResult.busNumber} visakhapatnam`} 
-                />
-                
-                <div className="mb-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={handleViewStops}
-                    className="flex items-center gap-2"
-                  >
-                    <MapPin className="h-4 w-4" />
-                    <span>View All Bus Stops</span>
-                  </Button>
-                </div>
-                
-                <h3 className="text-lg font-medium mb-2">People Sharing This Bus</h3>
-                
-                <div className="grid gap-3">
-                  {searchResult.sharingUsers.map((user: any) => (
-                    <Card key={user.id} className="hover:border-blue-500 cursor-pointer transition-all" onClick={() => handleViewBusDetails(user.id)}>
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className={`p-2 rounded-full ${user.gender === 'male' ? 'bg-blue-100' : user.gender === 'female' ? 'bg-pink-100' : 'bg-purple-100'}`}>
-                              <User className={`h-5 w-5 ${user.gender === 'male' ? 'text-blue-600' : user.gender === 'female' ? 'text-pink-600' : 'text-purple-600'}`} />
-                            </div>
-                            <div>
-                              <div className="font-medium">{user.userName || (user.gender === 'male' ? 'Male' : user.gender === 'female' ? 'Female' : 'Transgender')} Commuter</div>
-                              <div className="text-sm text-muted-foreground flex items-center gap-1">
-                                <MapPin className="h-3 w-3 inline" />
-                                {user.currentLocation}
-                              </div>
-                            </div>
-                          </div>
-                          <Badge>Live</Badge>
-                        </div>
-                        <div className="mt-2 text-sm">
-                          <span className="text-muted-foreground">Next Stop:</span> {user.nextStop}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <BusSearchResult 
+              busNumber={searchResult.busNumber}
+              sharingUsers={searchResult.sharingUsers}
+              onBack={handleBackToSearch}
+              onViewStops={handleViewStops}
+              onUserSelect={handleViewBusDetails}
+            />
           ) : (
             <>
               <div className="text-center mb-8">
@@ -221,71 +147,15 @@ export default function GetBus() {
                 </p>
               </div>
               
-              <form onSubmit={handleSearch} className="mb-8">
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Bus className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                      placeholder="Enter bus number (e.g., 1C, 28C)"
-                      className="pl-10 h-12"
-                      value={busNumber}
-                      onChange={(e) => setBusNumber(e.target.value)}
-                      disabled={isSearching}
-                    />
-                  </div>
-                  <Button 
-                    type="submit" 
-                    size="lg"
-                    disabled={isSearching}
-                    className="min-w-[100px]"
-                  >
-                    {isSearching ? (
-                      <span className="flex items-center gap-1">
-                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                        <span>Searching...</span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-2">
-                        <Search className="h-4 w-4" />
-                        <span>Search</span>
-                      </span>
-                    )}
-                  </Button>
-                </div>
-              </form>
+              <BusSearch 
+                onSearch={handleSearch}
+                isSearching={isSearching}
+              />
               
-              <div className="space-y-4">
-                <h2 className="text-lg font-medium">Popular Buses in Visakhapatnam</h2>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {popularBuses.map((bus) => (
-                    <Card 
-                      key={bus.number}
-                      className="bus-buddy-transition hover:shadow-md cursor-pointer"
-                      onClick={() => {
-                        setBusNumber(bus.number);
-                        toast.info(`Selected bus ${bus.number}`);
-                      }}
-                    >
-                      <CardHeader className="p-4 pb-2">
-                        <CardTitle className="text-lg font-bold flex items-center gap-2">
-                          <Bus className="h-4 w-4" />
-                          {bus.number}
-                        </CardTitle>
-                        <CardDescription className="text-sm truncate">
-                          {bus.route}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="p-4 pt-0">
-                        <div className="flex items-center justify-between">
-                          <Badge variant="outline">Track now</Badge>
-                          <span className="text-xs text-muted-foreground">Tap to select</span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
+              <PopularBuses 
+                buses={popularBuses}
+                onBusSelect={handleBusSelect}
+              />
             </>
           )}
         </div>
