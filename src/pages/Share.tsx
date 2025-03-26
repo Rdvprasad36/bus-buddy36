@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
@@ -7,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { X, ThumbsUp } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Map } from "@/components/Map";
-
 export default function Share() {
   const navigate = useNavigate();
   const [isSharing, setIsSharing] = useState(false);
@@ -20,93 +18,82 @@ export default function Share() {
   const [showThankYou, setShowThankYou] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [sharingBusNumber, setSharingBusNumber] = useState("");
-  
   useEffect(() => {
     // Check if user is logged in
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
     const storedUserName = localStorage.getItem("userName") || "";
     const storedUserType = localStorage.getItem("userType") || "passenger";
     const dutyStatus = localStorage.getItem("isOnDuty") === "true";
-    
     setIsLoggedIn(loggedIn);
     setUserName(storedUserName);
     setUserType(storedUserType);
     setIsOnDuty(dutyStatus);
-    
+
     // If not logged in, redirect to login
     if (!loggedIn) {
       toast.error("Please log in to share bus location");
       navigate("/login");
       return;
     }
-    
+
     // If driver is not on duty, redirect to home
     if (storedUserType === "driver" && !dutyStatus) {
       toast.error("You must be on duty to share bus location");
       navigate("/home");
       return;
     }
-    
+
     // Store previous page for navigation
     const prevPage = localStorage.getItem("previousPage") || "/home";
     setPreviousPage(prevPage);
-    
+
     // Check if already sharing
     const alreadySharing = localStorage.getItem("isSharing") === "true";
     const busNumber = localStorage.getItem("sharingBusNumber") || "";
-    
     if (alreadySharing) {
       setIsSharing(true);
       setShowStopButton(true);
       setSharingBusNumber(busNumber);
-      
+
       // Get current location for map
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setCurrentLocation({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            });
-          },
-          (error) => {
-            console.error("Error getting current location:", error);
-          }
-        );
-      }
-    }
-  }, [navigate]);
-
-  const handleShareComplete = () => {
-    // Store sharing status
-    setIsSharing(true);
-    setShowStopButton(true);
-    
-    // Get the bus number that's being shared
-    const busNumber = localStorage.getItem("sharingBusNumber") || "";
-    setSharingBusNumber(busNumber);
-    
-    // Get current location for map
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
+        navigator.geolocation.getCurrentPosition(position => {
           setCurrentLocation({
             lat: position.coords.latitude,
             lng: position.coords.longitude
           });
-        },
-        (error) => {
+        }, error => {
           console.error("Error getting current location:", error);
-        }
-      );
+        });
+      }
+    }
+  }, [navigate]);
+  const handleShareComplete = () => {
+    // Store sharing status
+    setIsSharing(true);
+    setShowStopButton(true);
+
+    // Get the bus number that's being shared
+    const busNumber = localStorage.getItem("sharingBusNumber") || "";
+    setSharingBusNumber(busNumber);
+
+    // Get current location for map
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        setCurrentLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+      }, error => {
+        console.error("Error getting current location:", error);
+      });
     }
   };
-
   const handleStopSharing = () => {
     // Remove sharing data
     localStorage.removeItem("isSharing");
     localStorage.removeItem("sharingBusNumber");
-    
+
     // Remove from sharing users list
     const userId = localStorage.getItem("userId");
     if (userId) {
@@ -114,7 +101,7 @@ export default function Share() {
       const updatedUsers = sharingUsers.filter(user => user.userId !== userId);
       localStorage.setItem("sharingUsers", JSON.stringify(updatedUsers));
     }
-    
+
     // Clear location watch if it exists
     if (navigator.geolocation) {
       const watchId = parseInt(localStorage.getItem("locationWatchId") || "0");
@@ -123,11 +110,10 @@ export default function Share() {
         localStorage.removeItem("locationWatchId");
       }
     }
-    
     setIsSharing(false);
     setShowStopButton(false);
     setShowThankYou(true);
-    
+
     // Navigate back after showing thank you message
     setTimeout(() => {
       toast.success("Thank you for helping other commuters!");
@@ -135,14 +121,11 @@ export default function Share() {
       navigate(previousPage);
     }, 3000);
   };
-
-  return (
-    <div className="min-h-screen flex flex-col bg-background">
+  return <div className="min-h-screen flex flex-col bg-background">
       <NavBar isLoggedIn={isLoggedIn} userName={userName} />
       
       <main className="flex-1 container mx-auto pt-24 pb-6 px-4">
-        {showThankYou ? (
-          <div className="max-w-md mx-auto text-center">
+        {showThankYou ? <div className="max-w-md mx-auto text-center">
             <div className="mb-8">
               <div className="w-24 h-24 mx-auto bg-green-100 rounded-full flex items-center justify-center">
                 <ThumbsUp className="h-12 w-12 text-green-600" />
@@ -156,11 +139,7 @@ export default function Share() {
             <p className="text-sm text-muted-foreground animate-pulse">
               Redirecting you back...
             </p>
-          </div>
-        ) : !isSharing ? (
-          <ShareLocation onShareComplete={handleShareComplete} />
-        ) : (
-          <div className="max-w-md mx-auto text-center">
+          </div> : !isSharing ? <ShareLocation onShareComplete={handleShareComplete} /> : <div className="max-w-md mx-auto text-center">
             <div className="mb-8">
               <div className="w-24 h-24 mx-auto bg-green-100 rounded-full flex items-center justify-center animate-pulse-soft">
                 <div className="w-16 h-16 bg-green-400 rounded-full flex items-center justify-center">
@@ -178,24 +157,14 @@ export default function Share() {
             </p>
             
             <div className="mb-6">
-              <Map 
-                className="h-[300px] w-full rounded-lg overflow-hidden" 
-                useGoogleMaps={true} 
-                location="visakhapatnam" 
-              />
+              <Map className="h-[300px] w-full rounded-lg overflow-hidden" useGoogleMaps={true} location="visakhapatnam" />
             </div>
             
-            <Button 
-              variant="destructive"
-              onClick={handleStopSharing}
-              className="gap-2"
-            >
+            <Button variant="destructive" onClick={handleStopSharing} className="gap-2 py-[24px]">
               <X className="h-4 w-4" />
               <span>Stop Sharing</span>
             </Button>
-          </div>
-        )}
+          </div>}
       </main>
-    </div>
-  );
+    </div>;
 }
