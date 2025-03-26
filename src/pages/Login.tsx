@@ -21,13 +21,16 @@ export default function Login() {
     // In a real app, we would call an API to authenticate
     console.log("Login data:", data);
     
+    // Store user type in localStorage
+    localStorage.setItem("userType", data.userType);
+    
     // Simulate successful login
     toast.success("Login successful");
     
     // In a real app, we would store the user session
     localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("userName", data.username);
-    localStorage.setItem("userGender", data.gender);
+    localStorage.setItem("userName", data.username || data.rtcId || "User");
+    localStorage.setItem("userGender", data.gender || "not-specified");
     
     // Navigate to location permission page
     navigate("/location-permission");

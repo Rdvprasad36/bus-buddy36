@@ -9,14 +9,17 @@ import { BusDetails } from "@/components/BusDetails";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Search, Share2, Map as MapIcon, ArrowLeft } from "lucide-react";
+import { Search, Share2, Map as MapIcon, ArrowLeft, Navigation } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BusStops } from "@/components/BusStops";
+import { DutyToggle } from "@/components/DutyToggle";
 
 export default function Home() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+  const [userType, setUserType] = useState<string>("passenger");
+  const [isOnDuty, setIsOnDuty] = useState(false);
   const [selectedBus, setSelectedBus] = useState<string | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [showStops, setShowStops] = useState(false);
@@ -25,9 +28,13 @@ export default function Home() {
     // Check if user is logged in
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
     const storedUserName = localStorage.getItem("userName") || "";
+    const storedUserType = localStorage.getItem("userType") || "passenger";
+    const dutyStatus = localStorage.getItem("isOnDuty") === "true";
     
     setIsLoggedIn(loggedIn);
     setUserName(storedUserName);
+    setUserType(storedUserType);
+    setIsOnDuty(dutyStatus);
     
     // Simulate map loading
     const timer = setTimeout(() => {
@@ -52,10 +59,32 @@ export default function Home() {
     setShowStops(false);
   };
 
-  const handleShareLocation = () => {
+  const handleGetBusLocation = () => {
+    // Store current page before navigating
+    localStorage.setItem("previousPage", "/home");
+    navigate("/get");
+  };
+
+  const handleShareBusLocation = () => {
+    // Only allow on-duty drivers/conductors to share bus location
+    if (userType === "driver" && !isOnDuty) {
+      toast.error("You must be on duty to share bus location");
+      return;
+    }
+    
     // Store current page before navigating
     localStorage.setItem("previousPage", "/home");
     navigate("/share");
+  };
+
+  const handleShareMyLocation = () => {
+    // Implement share my live location feature
+    // This would typically generate a shareable link
+    toast.info("Live location sharing will be available soon");
+  };
+
+  const handleDutyChange = (onDuty: boolean) => {
+    setIsOnDuty(onDuty);
   };
 
   const handleShowStops = () => {
@@ -127,28 +156,49 @@ export default function Home() {
                       currentLocation="Siripuram Junction"
                       nextStop="Jagadamba Center"
                       arrivalTime="5 minutes"
-                      onShareLocation={handleShareLocation}
+                      onShareLocation={handleShareBusLocation}
                       onShowStops={handleShowStops}
                     />
                   </div>
                 )}
               </div>
               
+              {/* Duty Toggle for drivers/conductors */}
+              {userType === "driver" && (
+                <div className="my-4">
+                  <DutyToggle onDutyChange={handleDutyChange} className="mb-2" />
+                </div>
+              )}
+              
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button 
-                  onClick={() => navigate("/get")}
+                  onClick={handleGetBusLocation}
                   className="flex-1 h-14 text-base"
                 >
                   <MapIcon className="mr-2 h-5 w-5" />
-                  <span>Get Bus</span>
+                  <span>Get The Bus Location</span>
                 </Button>
+                
+                {/* Show Share Bus Location only for on-duty drivers */}
+                {(userType === "passenger" || (userType === "driver" && isOnDuty)) && (
+                  <Button 
+                    variant={userType === "driver" ? "default" : "outline"}
+                    onClick={handleShareBusLocation}
+                    className="flex-1 h-14 text-base"
+                  >
+                    <Share2 className="mr-2 h-5 w-5" />
+                    <span>Share Bus Location</span>
+                  </Button>
+                )}
+                
+                {/* Add Share My Live Location button for all users */}
                 <Button 
                   variant="outline"
-                  onClick={handleShareLocation}
+                  onClick={handleShareMyLocation}
                   className="flex-1 h-14 text-base"
                 >
-                  <Share2 className="mr-2 h-5 w-5" />
-                  <span>Share Location</span>
+                  <Navigation className="mr-2 h-5 w-5" />
+                  <span>Share My Live Location</span>
                 </Button>
               </div>
               

@@ -21,16 +21,20 @@ export default function Signup() {
     // In a real app, we would call an API to register
     console.log("Signup data:", data);
     
+    // Check if passwords match for signup
+    if (data.password !== data.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    
     // Simulate successful registration
     toast.success("Account created successfully");
     
-    // In a real app, we would store the user session
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("userName", data.username);
-    localStorage.setItem("userGender", data.gender);
+    // Store user type in localStorage
+    localStorage.setItem("userType", data.userType);
     
-    // Navigate to location permission page
-    navigate("/location-permission");
+    // Navigate to login page after successful signup
+    navigate("/login");
   };
 
   return (

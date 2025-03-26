@@ -22,20 +22,35 @@ export default function Index() {
     setIsLoggedIn(loggedIn);
     setUserName(storedUserName);
 
-    // If already logged in, redirect to home page
-    if (loggedIn) {
-      navigate("/home");
-      return;
-    }
-
-    // Hide intro after animation completes - faster animation (1s instead of 3s)
+    // If already logged in, redirect to home page after splash screen
+    // Hide intro after animation completes - 4 seconds splash screen
     const timer = setTimeout(() => {
       setShowIntro(false);
       setAnimationComplete(true);
-    }, 1000);
+      
+      if (loggedIn) {
+        navigate("/home");
+      }
+    }, 4000);
     
     return () => clearTimeout(timer);
   }, [navigate]);
+
+  const handleGetBusClick = () => {
+    if (isLoggedIn) {
+      navigate("/get");
+    } else {
+      navigate("/login");
+    }
+  };
+
+  const handleShareLocationClick = () => {
+    if (isLoggedIn) {
+      navigate("/share");
+    } else {
+      navigate("/login");
+    }
+  };
 
   if (showIntro) {
     return (
@@ -89,14 +104,14 @@ export default function Index() {
               <div className="mb-4 bg-blue-100 dark:bg-blue-900 p-3 rounded-full w-fit">
                 <Bus className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-blue-600">Get Bus</h3>
+              <h3 className="text-xl font-semibold mb-2 text-blue-600">Get The Bus Location</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-4">Find real-time updates on bus locations, routes, and schedules.</p>
               <Button 
-                onClick={() => navigate("/get")}
+                onClick={handleGetBusClick}
                 className="w-full"
               >
                 <MapIcon className="mr-2 h-5 w-5" />
-                <span>Get Bus</span>
+                <span>Get The Bus Location</span>
               </Button>
             </div>
             
@@ -104,15 +119,15 @@ export default function Index() {
               <div className="mb-4 bg-blue-100 dark:bg-blue-900 p-3 rounded-full w-fit">
                 <Share2 className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-blue-600">Share Your Location</h3>
+              <h3 className="text-xl font-semibold mb-2 text-blue-600">Share Bus Location</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-4">Help others by sharing your bus location and journey details.</p>
               <Button 
                 variant="outline"
-                onClick={() => navigate("/share")}
+                onClick={handleShareLocationClick}
                 className="w-full"
               >
                 <Share2 className="mr-2 h-5 w-5" />
-                <span>Share Location</span>
+                <span>Share Bus Location</span>
               </Button>
             </div>
           </section>

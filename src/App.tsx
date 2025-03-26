@@ -11,6 +11,7 @@ import LocationPermission from "./pages/LocationPermission";
 import Home from "./pages/Home";
 import GetBus from "./pages/GetBus";
 import Share from "./pages/Share";
+import ShareLiveLocation from "./pages/ShareLiveLocation";
 import Data from "./pages/Data";
 import About from "./pages/About";
 import AddBus from "./pages/AddBus";
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/home" element={<Home />} />
           <Route path="/get" element={<GetBus />} />
           <Route path="/share" element={<Share />} />
+          <Route path="/share-live" element={<ShareLiveLocation />} />
           <Route path="/data" element={<Data />} />
           <Route path="/about" element={<About />} />
           <Route path="/add-bus" element={<AddBus />} />

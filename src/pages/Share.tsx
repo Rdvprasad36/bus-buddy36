@@ -13,6 +13,8 @@ export default function Share() {
   const [isSharing, setIsSharing] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+  const [userType, setUserType] = useState<string>("passenger");
+  const [isOnDuty, setIsOnDuty] = useState(false);
   const [showStopButton, setShowStopButton] = useState(false);
   const [previousPage, setPreviousPage] = useState<string>("/home");
   const [showThankYou, setShowThankYou] = useState(false);
@@ -23,14 +25,26 @@ export default function Share() {
     // Check if user is logged in
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
     const storedUserName = localStorage.getItem("userName") || "";
+    const storedUserType = localStorage.getItem("userType") || "passenger";
+    const dutyStatus = localStorage.getItem("isOnDuty") === "true";
     
     setIsLoggedIn(loggedIn);
     setUserName(storedUserName);
+    setUserType(storedUserType);
+    setIsOnDuty(dutyStatus);
     
     // If not logged in, redirect to login
     if (!loggedIn) {
-      toast.error("Please log in to share your location");
+      toast.error("Please log in to share bus location");
       navigate("/login");
+      return;
+    }
+    
+    // If driver is not on duty, redirect to home
+    if (storedUserType === "driver" && !dutyStatus) {
+      toast.error("You must be on duty to share bus location");
+      navigate("/home");
+      return;
     }
     
     // Store previous page for navigation
@@ -155,7 +169,7 @@ export default function Share() {
               </div>
             </div>
             
-            <h1 className="text-2xl font-bold mb-2">You're sharing your location</h1>
+            <h1 className="text-2xl font-bold mb-2">You're sharing your bus location</h1>
             <p className="text-muted-foreground mb-2">
               Bus Number: <span className="font-bold">{sharingBusNumber}</span>
             </p>
