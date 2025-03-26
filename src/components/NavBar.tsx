@@ -94,7 +94,7 @@ export function NavBar({
       </div>
       
       {/* Navigation arrows moved to bottom of screen */}
-      <div className="fixed bottom-6 z-50 flex justify-between w-full mx-0 px-0 rounded-sm py-0 my-0">
+      <div className="fixed bottom-6 z-50 flex justify-between w-full mx-0 px-0 rounded-sm py-0 my-[100px]">
         <Button variant="secondary" size="icon" onClick={handleBackNavigation} aria-label="Go back" className="h-12 w-12 shadow-lg bg-white/80 backdrop-blur-sm hover:bg-white/90 rounded-full my-0 py-0 text-justify text-sm px-0 mx-0">
           <ArrowLeft className="h-5 w-5" />
         </Button>
