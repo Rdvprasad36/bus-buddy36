@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
@@ -13,6 +14,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BusStops } from "@/components/BusStops";
 import { DutyToggle } from "@/components/DutyToggle";
 import { toast } from "@/hooks/use-toast";
+import { DepotBusList } from "@/components/DepotBusList";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -23,6 +26,8 @@ export default function Home() {
   const [selectedBus, setSelectedBus] = useState<string | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [showStops, setShowStops] = useState(false);
+  const [selectedDepot, setSelectedDepot] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   
   useEffect(() => {
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
@@ -88,11 +93,60 @@ export default function Home() {
     navigate("/get");
   };
 
+  // Visakhapatnam bus depots for simplified display
+  const depots = [
+    "Simhachalam Depot",
+    "Gajuwaka Depot",
+    "Maddilapalem Depot"
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-background overflow-hidden">
       <NavBar isLoggedIn={isLoggedIn} userName={userName} />
       
       <main className="flex-1 container mx-auto pt-20 pb-6 px-4">
+        {/* Welcome Message */}
+        {isLoggedIn && (
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6 text-center">
+            <h2 className="text-xl font-bold text-blue-800 dark:text-blue-300">Welcome to Bus Buddy, {userName}!</h2>
+            <p className="text-blue-600 dark:text-blue-400">Find and share bus locations in real-time</p>
+          </div>
+        )}
+        
+        {/* Bus Data Section */}
+        <Card className="mb-6">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg font-bold">Visakhapatnam Bus Data</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              {depots.map((depot) => (
+                <div 
+                  key={depot} 
+                  className={`bg-white dark:bg-gray-800 border rounded-lg p-4 hover:border-blue-500 cursor-pointer transition-all ${selectedDepot === depot ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : ""}`}
+                  onClick={() => setSelectedDepot(depot)}
+                >
+                  <h3 className="font-medium">{depot}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    View routes from this depot
+                  </p>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex justify-end">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigate("/data")}
+                className="text-blue-600"
+              >
+                View Complete Bus Data
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+        
         {showStops && selectedBusData ? (
           <div className="max-w-2xl mx-auto">
             <div className="mb-4">
@@ -169,9 +223,9 @@ export default function Home() {
                   <span>Get The Bus Location</span>
                 </Button>
                 
-                {(userType === "passenger" || (userType === "driver" && isOnDuty)) && (
+                {(userType === "driver" && isOnDuty) && (
                   <Button 
-                    variant={userType === "driver" ? "default" : "outline"}
+                    variant="default"
                     onClick={handleShareBusLocation}
                     className="flex-1 h-14 text-base"
                   >

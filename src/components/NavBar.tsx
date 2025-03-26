@@ -2,7 +2,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Menu, ArrowLeft, ArrowRight } from "lucide-react";
+import { User, LogOut, Menu, ArrowLeft, ArrowRight, Bus } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -46,6 +46,12 @@ export function NavBar({
             <li>
               <Link to="/home" className="text-sm font-medium hover:text-blue-600 bus-buddy-transition">
                 Home
+              </Link>
+            </li>
+            <li>
+              <Link to="/data" className="text-sm font-medium hover:text-blue-600 bus-buddy-transition flex items-center gap-1">
+                <Bus className="h-4 w-4" />
+                <span>Bus Data</span>
               </Link>
             </li>
             <li>

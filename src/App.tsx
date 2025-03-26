@@ -16,6 +16,7 @@ import HowToUse from "./pages/HowToUse";
 import About from "./pages/About";
 import AddBus from "./pages/AddBus";
 import NotFound from "./pages/NotFound";
+import Data from "./pages/Data";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/how-to-use" element={<HowToUse />} />
           <Route path="/about" element={<About />} />
           <Route path="/add-bus" element={<AddBus />} />
+          <Route path="/data" element={<Data />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
