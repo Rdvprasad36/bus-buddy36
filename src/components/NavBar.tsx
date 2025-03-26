@@ -1,5 +1,5 @@
 
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
 import { User, LogOut, Menu, ArrowLeft, ArrowRight } from "lucide-react";
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { toast } from "@/hooks/use-toast";
+import { useNavigation } from "@/hooks/use-navigation";
 
 interface NavBarProps {
   isLoggedIn?: boolean;
@@ -24,30 +24,7 @@ interface NavBarProps {
 export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
-
-  const handleBackNavigation = () => {
-    navigate(-1);
-  };
-
-  const handleForwardNavigation = () => {
-    navigate(1);
-  };
-
-  const handleLogout = () => {
-    // Clear all login information from localStorage
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("userGender");
-    localStorage.removeItem("sharingUsers");
-    
-    // Show toast notification
-    toast.success("Logged out successfully");
-    
-    // Navigate to index page
-    navigate("/");
-  };
+  const { handleBackNavigation, handleForwardNavigation, handleLogout } = useNavigation();
 
   return (
     <header className={cn(
