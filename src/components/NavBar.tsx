@@ -152,7 +152,7 @@ export function NavBar({ isLoggedIn = false, userName = "", className }: NavBarP
         </nav>
       </div>
       
-      {/* Navigation arrows - moved to bottom of screen */}
+      {/* Navigation arrows moved to bottom of screen */}
       <div className="fixed bottom-6 z-50 flex justify-between w-full px-6">
         <Button
           variant="secondary"
