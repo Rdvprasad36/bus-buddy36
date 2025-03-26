@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
@@ -6,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { X, ThumbsUp } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Map } from "@/components/Map";
+
 export default function Share() {
   const navigate = useNavigate();
   const [isSharing, setIsSharing] = useState(false);
@@ -18,6 +20,7 @@ export default function Share() {
   const [showThankYou, setShowThankYou] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [sharingBusNumber, setSharingBusNumber] = useState("");
+
   useEffect(() => {
     // Check if user is logged in
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
@@ -33,6 +36,13 @@ export default function Share() {
     if (!loggedIn) {
       toast.error("Please log in to share bus location");
       navigate("/login");
+      return;
+    }
+
+    // If passenger, redirect to home
+    if (storedUserType === "passenger") {
+      toast.error("Only drivers and conductors can share bus locations");
+      navigate("/home");
       return;
     }
 
@@ -68,6 +78,7 @@ export default function Share() {
       }
     }
   }, [navigate]);
+
   const handleShareComplete = () => {
     // Store sharing status
     setIsSharing(true);
@@ -89,6 +100,7 @@ export default function Share() {
       });
     }
   };
+
   const handleStopSharing = () => {
     // Remove sharing data
     localStorage.removeItem("isSharing");
@@ -121,6 +133,7 @@ export default function Share() {
       navigate(previousPage);
     }, 3000);
   };
+
   return <div className="min-h-screen flex flex-col bg-background">
       <NavBar isLoggedIn={isLoggedIn} userName={userName} />
       

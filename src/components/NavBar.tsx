@@ -1,3 +1,4 @@
+
 import { Link, useLocation } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
@@ -6,11 +7,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useNavigation } from "@/hooks/use-navigation";
+
 interface NavBarProps {
   isLoggedIn?: boolean;
   userName?: string;
   className?: string;
 }
+
 export function NavBar({
   isLoggedIn = false,
   userName = "",
@@ -23,6 +26,7 @@ export function NavBar({
     handleForwardNavigation,
     handleLogout
   } = useNavigation();
+
   return <header className="mx-[5px]">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -45,8 +49,8 @@ export function NavBar({
               </Link>
             </li>
             <li>
-              <Link to="/data" className="text-sm font-medium hover:text-blue-600 bus-buddy-transition">
-                Data
+              <Link to="/how-to-use" className="text-sm font-medium hover:text-blue-600 bus-buddy-transition">
+                How to Use
               </Link>
             </li>
             <li>

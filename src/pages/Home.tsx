@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
@@ -13,6 +12,7 @@ import { Search, Share2, Map as MapIcon, ArrowLeft, Navigation } from "lucide-re
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BusStops } from "@/components/BusStops";
 import { DutyToggle } from "@/components/DutyToggle";
+import { toast } from "@/hooks/use-toast";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -25,7 +25,6 @@ export default function Home() {
   const [showStops, setShowStops] = useState(false);
   
   useEffect(() => {
-    // Check if user is logged in
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
     const storedUserName = localStorage.getItem("userName") || "";
     const storedUserType = localStorage.getItem("userType") || "passenger";
@@ -36,7 +35,6 @@ export default function Home() {
     setUserType(storedUserType);
     setIsOnDuty(dutyStatus);
     
-    // Simulate map loading
     const timer = setTimeout(() => {
       setIsMapLoaded(true);
     }, 1500);
@@ -44,7 +42,6 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Mock bus data
   const buses = [
     { id: "1", number: "1C", position: [20, 20], capacity: "medium" as const },
     { id: "2", number: "28C", position: [40, 30], capacity: "full" as const },
@@ -60,26 +57,21 @@ export default function Home() {
   };
 
   const handleGetBusLocation = () => {
-    // Store current page before navigating
     localStorage.setItem("previousPage", "/home");
     navigate("/get");
   };
 
   const handleShareBusLocation = () => {
-    // Only allow on-duty drivers/conductors to share bus location
     if (userType === "driver" && !isOnDuty) {
       toast.error("You must be on duty to share bus location");
       return;
     }
     
-    // Store current page before navigating
     localStorage.setItem("previousPage", "/home");
     navigate("/share");
   };
 
   const handleShareMyLocation = () => {
-    // Implement share my live location feature
-    // This would typically generate a shareable link
     toast.info("Live location sharing will be available soon");
   };
 
@@ -121,7 +113,6 @@ export default function Home() {
           </div>
         ) : (
           <div className="grid lg:grid-cols-5 gap-6">
-            {/* Main content - Map and bus details */}
             <div className="lg:col-span-3 space-y-4">
               <div className="relative">
                 <Map className="aspect-[4/3] md:aspect-[16/9] w-full rounded-lg overflow-hidden shadow-lg"
@@ -163,7 +154,6 @@ export default function Home() {
                 )}
               </div>
               
-              {/* Duty Toggle for drivers/conductors */}
               {userType === "driver" && (
                 <div className="my-4">
                   <DutyToggle onDutyChange={handleDutyChange} className="mb-2" />
@@ -179,7 +169,6 @@ export default function Home() {
                   <span>Get The Bus Location</span>
                 </Button>
                 
-                {/* Show Share Bus Location only for on-duty drivers */}
                 {(userType === "passenger" || (userType === "driver" && isOnDuty)) && (
                   <Button 
                     variant={userType === "driver" ? "default" : "outline"}
@@ -191,7 +180,6 @@ export default function Home() {
                   </Button>
                 )}
                 
-                {/* Add Share My Live Location button for all users */}
                 <Button 
                   variant="outline"
                   onClick={handleShareMyLocation}
@@ -202,7 +190,6 @@ export default function Home() {
                 </Button>
               </div>
               
-              {/* Additional options */}
               <div className="mt-6">
                 <h3 className="text-lg font-semibold mb-3">Bus Activity</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -240,7 +227,6 @@ export default function Home() {
               </div>
             </div>
             
-            {/* Sidebar - Bus search and list */}
             <div className="lg:col-span-2">
               <Tabs defaultValue="buses">
                 <TabsList className="grid grid-cols-2 mb-4">
