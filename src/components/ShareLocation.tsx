@@ -119,6 +119,11 @@ export function ShareLocation({ onShareComplete }: ShareLocationProps) {
     }
   };
 
+  // Handle capacity change
+  const handleCapacityChange = (value: "empty" | "medium" | "full") => {
+    setCapacity(value);
+  };
+
   return (
     <Card className="max-w-md mx-auto">
       <CardHeader>
@@ -155,7 +160,7 @@ export function ShareLocation({ onShareComplete }: ShareLocationProps) {
             </label>
             <BusCapacitySelector 
               capacity={capacity} 
-              onCapacityChange={setCapacity}
+              onCapacityChange={handleCapacityChange}
               disabled={isSharing}
             />
           </div>
