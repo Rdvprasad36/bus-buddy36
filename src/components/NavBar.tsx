@@ -1,20 +1,16 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Menu, ArrowLeft, ArrowRight, Bus, Home, Info } from "lucide-react";
+import { User, LogOut, Menu, ArrowLeft, ArrowRight, Bus } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useNavigation } from "@/hooks/use-navigation";
-import { useIsMobile } from "@/hooks/use-mobile";
-
 interface NavBarProps {
   isLoggedIn?: boolean;
   userName?: string;
   className?: string;
 }
-
 export function NavBar({
   isLoggedIn = false,
   userName = "",
@@ -27,96 +23,33 @@ export function NavBar({
     handleForwardNavigation,
     handleLogout
   } = useNavigation();
-  const isMobile = useIsMobile();
-
   return <header className="mx-[5px]">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Link to="/" className="bus-buddy-transition hover:opacity-80 flex items-center">
+          <Link to="/" className="bus-buddy-transition hover:opacity-80 flex items-center px-[52px] my-[12px]">
             <Logo size="sm" withText withTagline={false} variant="horizontal" />
           </Link>
         </div>
 
-        {/* Always visible navigation items on mobile */}
-        {isMobile && (
-          <div className="flex items-center gap-3">
-            <Link to="/home" className="flex flex-col items-center">
-              <Home className="h-5 w-5 text-blue-600" />
-              <span className="text-xs">Home</span>
-            </Link>
-            <Link to="/data" className="flex flex-col items-center">
-              <Bus className="h-5 w-5 text-blue-600" />
-              <span className="text-xs">Bus Data</span>
-            </Link>
-            {!isLoggedIn ? (
-              <Link to="/login" className="flex flex-col items-center">
-                <User className="h-5 w-5 text-blue-600" />
-                <span className="text-xs">Login</span>
-              </Link>
-            ) : (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="flex flex-col items-center p-1">
-                    <User className="h-5 w-5 text-blue-600" />
-                    <span className="text-xs">Account</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile" className="cursor-pointer w-full">
-                      Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/activity" className="cursor-pointer w-full">
-                      Activity
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer w-full flex items-center text-destructive" onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-            <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu" className="flex flex-col items-center p-1">
-              <Menu className="h-5 w-5 text-blue-600" />
-              <span className="text-xs">Menu</span>
-            </Button>
-          </div>
-        )}
-
-        {/* Desktop menu */}
-        <div className={cn("sm:hidden", isMobile ? "hidden" : "")}>
+        <div className="sm:hidden">
           <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
             <Menu className="h-5 w-5" />
           </Button>
         </div>
 
-        <nav className={cn("absolute top-full left-0 w-full p-4 glass border-b transform transition-all duration-300 ease-in-out z-50 bg-white dark:bg-gray-900 sm:static sm:block sm:w-auto sm:p-0 sm:border-0 sm:bg-transparent sm:transform-none", 
-          isMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0 pointer-events-none", 
-          "sm:translate-y-0 sm:opacity-100 sm:pointer-events-auto"
-        )}>
+        <nav className={cn("absolute top-full left-0 w-full p-4 glass border-b transform transition-all duration-300 ease-in-out sm:static sm:block sm:w-auto sm:p-0 sm:border-0 sm:bg-transparent sm:transform-none", isMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0 pointer-events-none", "sm:translate-y-0 sm:opacity-100 sm:pointer-events-auto")}>
           <ul className="flex flex-col sm:flex-row items-center gap-5">
-            {/* Hidden on mobile since they're in the top bar */}
-            {!isMobile && (
-              <>
-                <li>
-                  <Link to="/home" className="text-sm font-medium hover:text-blue-600 bus-buddy-transition">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/data" className="text-sm font-medium hover:text-blue-600 bus-buddy-transition flex items-center gap-1">
-                    <Bus className="h-4 w-4" />
-                    <span>Bus Data</span>
-                  </Link>
-                </li>
-              </>
-            )}
+            <li>
+              <Link to="/home" className="text-sm font-medium hover:text-blue-600 bus-buddy-transition">
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link to="/data" className="text-sm font-medium hover:text-blue-600 bus-buddy-transition flex items-center gap-1">
+                <Bus className="h-4 w-4" />
+                <span>Bus Data</span>
+              </Link>
+            </li>
             <li>
               <Link to="/how-to-use" className="text-sm font-medium hover:text-blue-600 bus-buddy-transition">
                 How to Use
@@ -127,7 +60,7 @@ export function NavBar({
                 About
               </Link>
             </li>
-            {isLoggedIn && !isMobile ? <li>
+            {isLoggedIn ? <li>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="flex items-center gap-2">
@@ -157,11 +90,11 @@ export function NavBar({
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              </li> : !isLoggedIn && !isMobile ? <li>
+              </li> : <li>
                 <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
                   <Link to="/login">Login</Link>
                 </Button>
-              </li> : null}
+              </li>}
           </ul>
         </nav>
       </div>
