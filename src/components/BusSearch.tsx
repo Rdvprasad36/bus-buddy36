@@ -15,7 +15,7 @@ interface BusSearchProps {
 export function BusSearch({ 
   onSearch, 
   isSearching, 
-  showAddBusOption = false // changed default to false
+  showAddBusOption = true
 }: BusSearchProps) {
   const [busNumber, setBusNumber] = useState("");
   const navigate = useNavigate();

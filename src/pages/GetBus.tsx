@@ -147,7 +147,6 @@ export default function GetBus() {
             <BusSearch 
               onSearch={handleSearch}
               isSearching={isSearching}
-              showAddBusOption={false}
             />
             
             <PopularBuses 

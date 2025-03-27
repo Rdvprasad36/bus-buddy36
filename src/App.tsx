@@ -17,8 +17,6 @@ import About from "./pages/About";
 import AddBus from "./pages/AddBus";
 import NotFound from "./pages/NotFound";
 import Data from "./pages/Data";
-import Profile from "./pages/Profile";
-import Activity from "./pages/Activity";
 
 const queryClient = new QueryClient();
 
@@ -41,8 +39,6 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/add-bus" element={<AddBus />} />
           <Route path="/data" element={<Data />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/activity" element={<Activity />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
