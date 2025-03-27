@@ -1,159 +1,174 @@
 
-import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { 
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription 
 } from "@/components/ui/card";
-import { Share2, Users, Map, Plus, Bus } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
-import { BusNumberSelector } from "@/components/BusNumberSelector";
 import { BusCapacitySelector } from "@/components/BusCapacitySelector";
-import { startLocationSharing } from "@/utils/locationSharing";
-import { useNavigate } from "react-router-dom";
+import { Bus, Search, Share2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 interface ShareLocationProps {
-  className?: string;
-  onShareComplete: () => void;
+  onShareComplete: (busNumber: string, busFound: boolean) => void;
 }
 
-export function ShareLocation({ 
-  className, 
-  onShareComplete 
-}: ShareLocationProps) {
-  const [isSharing, setIsSharing] = useState(false);
+export function ShareLocation({ onShareComplete }: ShareLocationProps) {
   const [busNumber, setBusNumber] = useState("");
-  const [capacity, setCapacity] = useState("medium");
-  const navigate = useNavigate();
-  
-  const userId = localStorage.getItem("userId") || `user_${Math.floor(Math.random() * 10000)}`;
-  const userName = localStorage.getItem("userName") || "Anonymous";
-  const gender = localStorage.getItem("gender") || "not-specified";
-  const userType = localStorage.getItem("userType") || "passenger";
-  
-  useEffect(() => {
-    if (!localStorage.getItem("userId")) {
-      localStorage.setItem("userId", userId);
-    }
-  }, [userId]);
+  const [capacity, setCapacity] = useState<"empty" | "medium" | "full">("medium");
+  const [isSharing, setIsSharing] = useState(false);
+  const [watchId, setWatchId] = useState<number | null>(null);
+
+  // In a real app, this would come from a database
+  const knownBusNumbers = ["1C", "28C", "999", "400", "37G", "900", "500", "555", "10K", "60R", "6", "10A"];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!busNumber) {
-      toast.error("Please select a bus number");
+    if (!busNumber.trim()) {
+      toast.error("Please enter a bus number");
       return;
     }
+    
+    const busNumberTrimmed = busNumber.trim().toUpperCase();
+    
+    // Check if the bus number exists in our database
+    const busExists = knownBusNumbers.includes(busNumberTrimmed);
 
+    startSharing(busNumberTrimmed, busExists);
+  };
+
+  const startSharing = (busNumber: string, busExists: boolean) => {
     setIsSharing(true);
     
-    startLocationSharing(
-      userId,
-      busNumber,
-      capacity,
-      userName,
-      gender,
-      () => {
-        setIsSharing(false);
-        toast.success(`You are now sharing your location for bus ${busNumber}`);
-        onShareComplete();
-      },
-      (errorMessage) => {
-        setIsSharing(false);
-        toast.error(errorMessage);
+    if (navigator.geolocation) {
+      const userId = localStorage.getItem("userId") || `user_${Math.floor(Math.random() * 10000)}`;
+      const userName = localStorage.getItem("userName") || "Anonymous";
+      const userType = localStorage.getItem("userType") || "driver";
+      const gender = localStorage.getItem("gender") || "male";
+      
+      // Save user ID if not already saved
+      if (!localStorage.getItem("userId")) {
+        localStorage.setItem("userId", userId);
       }
-    );
-  };
-
-  const handleAddBus = () => {
-    navigate("/add-bus");
+      
+      // Store sharing status
+      localStorage.setItem("isSharing", "true");
+      localStorage.setItem("sharingBusNumber", busNumber);
+      
+      // Start watching position
+      const id = navigator.geolocation.watchPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          
+          console.log("User location:", latitude, longitude);
+          
+          // Add to sharing users in localStorage (simplified example)
+          const sharingData = {
+            userId,
+            userName,
+            userType,
+            gender,
+            busNumber,
+            latitude,
+            longitude,
+            capacity,
+            timestamp: new Date().toISOString(),
+            currentLocation: "Near Jagadamba Junction", // In a real app, this would be reverse geocoded
+            nextStop: "RTC Complex" // In a real app, this would come from a route planning system
+          };
+          
+          // Update Firebase or other backend (mock)
+          console.log("Updating location in Firebase:", sharingData);
+          
+          // Store in localStorage for demo purposes
+          let sharingUsers = JSON.parse(localStorage.getItem("sharingUsers") || "[]");
+          const existingUserIndex = sharingUsers.findIndex((user: any) => user.userId === userId);
+          
+          if (existingUserIndex >= 0) {
+            sharingUsers[existingUserIndex] = sharingData;
+          } else {
+            sharingUsers.push(sharingData);
+          }
+          
+          localStorage.setItem("sharingUsers", JSON.stringify(sharingUsers));
+          localStorage.setItem("locationWatchId", id.toString());
+          
+          onShareComplete(busNumber, busExists);
+        },
+        (error) => {
+          console.error("Error getting user location:", error);
+          toast.error("Could not access your location. Please check your location permissions.");
+          setIsSharing(false);
+        },
+        { 
+          enableHighAccuracy: true,
+          maximumAge: 30000,
+          timeout: 27000
+        }
+      );
+      
+      setWatchId(id);
+    } else {
+      toast.error("Geolocation is not supported by your browser");
+      setIsSharing(false);
+    }
   };
 
   return (
-    <Card className={cn("w-full max-w-md mx-auto", className)}>
+    <Card className="max-w-md mx-auto">
       <CardHeader>
-        <CardTitle className="flex items-center justify-center gap-2">
-          <Share2 className="h-5 w-5" />
-          <span>Share Your Location</span>
+        <CardTitle className="text-xl flex items-center gap-2">
+          <Share2 className="h-5 w-5 text-primary" />
+          Share Bus Location
         </CardTitle>
-        <CardDescription className="text-center">
-          Help other commuters by sharing your current bus location and capacity
+        <CardDescription>
+          Help other commuters by sharing the real-time location of your bus
         </CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
-          <BusNumberSelector 
-            busNumber={busNumber} 
-            onBusNumberChange={setBusNumber} 
-            disabled={isSharing}
-          />
-          
-          {(userType === "driver" || userType === "conductor") && (
-            <div className="text-center">
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={handleAddBus}
-                className="flex items-center gap-1"
-              >
-                <Plus className="h-4 w-4" />
-                <Bus className="h-4 w-4" />
-                <span>Can't find your bus? Add New Bus</span>
-              </Button>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <label htmlFor="bus-number" className="text-sm font-medium">
+              Bus Number
+            </label>
+            <div className="relative">
+              <Bus className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="bus-number"
+                placeholder="Enter bus number (e.g., 28C)"
+                value={busNumber}
+                onChange={(e) => setBusNumber(e.target.value)}
+                className="pl-9"
+                disabled={isSharing}
+              />
             </div>
-          )}
-          
-          <BusCapacitySelector 
-            capacity={capacity} 
-            onCapacityChange={setCapacity} 
-            disabled={isSharing}
-          />
-          
-          <div className="flex items-center gap-2 bg-primary/10 p-3 rounded-md">
-            <Map className="h-5 w-5 text-primary flex-shrink-0" />
-            <p className="text-sm">
-              Your location will be shared until you leave the bus or manually stop sharing
-            </p>
           </div>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-2">
-          <ShareButton isSharing={isSharing} />
-          <p className="text-xs text-center text-muted-foreground mt-1">
-            By sharing your location, you agree to our Terms of Service and Privacy Policy
-          </p>
-        </CardFooter>
-      </form>
+          
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              Bus Capacity
+            </label>
+            <BusCapacitySelector 
+              value={capacity} 
+              onChange={setCapacity}
+              disabled={isSharing}
+            />
+          </div>
+          
+          <Button 
+            type="submit" 
+            className="w-full" 
+            disabled={isSharing || !busNumber.trim()}
+          >
+            {isSharing ? "Starting Location Sharing..." : "Start Sharing"}
+          </Button>
+        </form>
+      </CardContent>
     </Card>
-  );
-}
-
-interface ShareButtonProps {
-  isSharing: boolean;
-}
-
-function ShareButton({ isSharing }: ShareButtonProps) {
-  return (
-    <Button 
-      type="submit" 
-      className="w-full"
-      disabled={isSharing}
-    >
-      {isSharing ? (
-        <span className="flex items-center gap-1">
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-          <span>Sharing location...</span>
-        </span>
-      ) : (
-        <span className="flex items-center gap-2">
-          <Users className="h-4 w-4" />
-          <span>Share My Location</span>
-        </span>
-      )}
-    </Button>
   );
 }

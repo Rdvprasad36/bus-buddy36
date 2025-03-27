@@ -1,13 +1,10 @@
-
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
 import { toast } from "@/hooks/use-toast";
 import { ViewBusStops } from "@/components/ViewBusStops";
 import { BusSearch } from "@/components/BusSearch";
 import { PopularBuses } from "@/components/PopularBuses";
-import { BusSearchResult } from "@/components/BusSearchResult";
-import { Map } from "@/components/Map";
 import { SharingUsersList } from "@/components/SharingUsersList";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +13,7 @@ import { Bus, ArrowLeft } from "lucide-react";
 
 export default function GetBus() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isSearching, setIsSearching] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
   const [userName, setUserName] = useState(localStorage.getItem("userName") || "");
@@ -28,7 +26,14 @@ export default function GetBus() {
     // Check localStorage for sharing users on component mount
     const savedSharingUsers = JSON.parse(localStorage.getItem("sharingUsers") || "[]");
     console.log("Sharing users from localStorage:", savedSharingUsers);
-  }, []);
+    
+    // Check URL parameters for direct bus search
+    const params = new URLSearchParams(location.search);
+    const busNumber = params.get("bus");
+    if (busNumber) {
+      handleSearch(busNumber);
+    }
+  }, [location]);
   
   const popularBuses = [
     { number: "1C", route: "Pendurthi - RTC Complex" },
@@ -98,6 +103,12 @@ export default function GetBus() {
         );
         
         if (foundBus) {
+          // Show bus stops directly even if no one is sharing
+          setSearchResult({
+            busNumber,
+            sharingUsers: []
+          });
+          setShowResults(true);
           toast.info(`Found bus ${foundBus.number}, but no one is currently sharing their location`);
         } else {
           toast.error(`Bus ${busNumber} not found`);
@@ -125,11 +136,6 @@ export default function GetBus() {
     setSelectedUser(null);
   };
 
-  const handleStopSharing = () => {
-    setSelectedUser(null);
-    toast.success("Stopped viewing real-time location");
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <NavBar isLoggedIn={isLoggedIn} userName={userName} />
@@ -155,7 +161,7 @@ export default function GetBus() {
             />
           </div>
         ) : selectedUser ? (
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-xl mx-auto">
             <div className="mb-4">
               <Button 
                 variant="ghost" 
@@ -167,54 +173,34 @@ export default function GetBus() {
               </Button>
             </div>
             
-            <div className="grid lg:grid-cols-5 gap-6">
-              <div className="lg:col-span-3">
-                <Card className="mb-4">
-                  <CardHeader className="pb-2 flex flex-row items-center justify-between">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Bus className="h-5 w-5" />
-                      Bus {selectedUser.busNumber}
-                    </CardTitle>
-                    <Badge variant="outline">{selectedUser.userType}</Badge>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-sm mb-1">
-                      <span className="text-muted-foreground">Shared by:</span> {selectedUser.userName}
-                    </div>
-                    <div className="text-sm mb-1">
-                      <span className="text-muted-foreground">Current location:</span> {selectedUser.currentLocation}
-                    </div>
-                    <div className="text-sm">
-                      <span className="text-muted-foreground">Next stop:</span> {selectedUser.nextStop}
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Map 
-                  className="h-[300px] w-full rounded-lg overflow-hidden mb-4" 
-                  useGoogleMaps={true}
-                  location={`bus ${selectedUser.busNumber} ${selectedUser.currentLocation} visakhapatnam`}
-                />
-                
-                <Button 
-                  variant="outline"
-                  onClick={handleStopSharing} 
-                  className="w-full mt-2"
-                >
-                  Stop Viewing
-                </Button>
-              </div>
-              
-              <div className="lg:col-span-2">
-                <ViewBusStops 
-                  busNumber={selectedUser.busNumber} 
-                  onBack={() => setSelectedUser(null)} 
-                />
-              </div>
-            </div>
+            <Card className="mb-4">
+              <CardHeader className="pb-2 flex flex-row items-center justify-between">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Bus className="h-5 w-5" />
+                  Bus {selectedUser.busNumber}
+                </CardTitle>
+                <Badge variant="outline">{selectedUser.userType}</Badge>
+              </CardHeader>
+              <CardContent>
+                <div className="text-sm mb-1">
+                  <span className="text-muted-foreground">Shared by:</span> {selectedUser.userName}
+                </div>
+                <div className="text-sm mb-1">
+                  <span className="text-muted-foreground">Current location:</span> {selectedUser.currentLocation}
+                </div>
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Next stop:</span> {selectedUser.nextStop}
+                </div>
+              </CardContent>
+            </Card>
+            
+            <ViewBusStops 
+              busNumber={selectedUser.busNumber} 
+              onBack={() => setSelectedUser(null)} 
+            />
           </div>
         ) : searchResult && (
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-xl mx-auto">
             <div className="mb-4">
               <Button 
                 variant="ghost" 
@@ -228,32 +214,31 @@ export default function GetBus() {
             
             <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
               <Bus className="h-6 w-6" />
-              Bus {searchResult.busNumber} Live Locations
+              Bus {searchResult.busNumber} Information
             </h2>
             
-            <div className="grid lg:grid-cols-5 gap-6">
-              <div className="lg:col-span-3">
-                <Map 
-                  className="h-[400px] w-full rounded-lg overflow-hidden mb-4" 
-                  useGoogleMaps={true}
-                  location={`bus ${searchResult.busNumber} route visakhapatnam`}
-                />
-              </div>
-              
-              <div className="lg:col-span-2">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Currently Sharing ({searchResult.sharingUsers.length})</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <SharingUsersList 
-                      users={searchResult.sharingUsers} 
-                      onUserSelect={handleUserSelect}
-                    />
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
+            {searchResult.sharingUsers.length > 0 ? (
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle>Currently Sharing ({searchResult.sharingUsers.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <SharingUsersList 
+                    users={searchResult.sharingUsers} 
+                    onUserSelect={handleUserSelect}
+                  />
+                </CardContent>
+              </Card>
+            ) : (
+              <p className="text-muted-foreground mb-6">
+                No one is currently sharing their location for this bus.
+              </p>
+            )}
+            
+            <ViewBusStops 
+              busNumber={searchResult.busNumber} 
+              onBack={handleBackToSearch} 
+            />
           </div>
         )}
       </main>

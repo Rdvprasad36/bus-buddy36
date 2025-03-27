@@ -4,9 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
 import { ShareLocation } from "@/components/ShareLocation";
 import { Button } from "@/components/ui/button";
-import { X, ThumbsUp, MapPin } from "lucide-react";
+import { X, ThumbsUp, MapPin, Plus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { Map } from "@/components/Map";
 import { ViewBusStops } from "@/components/ViewBusStops";
 
 export default function Share() {
@@ -19,9 +18,9 @@ export default function Share() {
   const [showStopButton, setShowStopButton] = useState(false);
   const [previousPage, setPreviousPage] = useState<string>("/home");
   const [showThankYou, setShowThankYou] = useState(false);
-  const [currentLocation, setCurrentLocation] = useState(null);
   const [sharingBusNumber, setSharingBusNumber] = useState("");
-  const [showBusStops, setShowBusStops] = useState(false);
+  const [showBusStops, setShowBusStops] = useState(true); // Show bus stops by default
+  const [showAddBusPrompt, setShowAddBusPrompt] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -66,41 +65,17 @@ export default function Share() {
       setIsSharing(true);
       setShowStopButton(true);
       setSharingBusNumber(busNumber);
-
-      // Get current location for map
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-          setCurrentLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          });
-        }, error => {
-          console.error("Error getting current location:", error);
-        });
-      }
     }
   }, [navigate]);
 
-  const handleShareComplete = () => {
+  const handleShareComplete = (busNumber: string, busFound: boolean) => {
     // Store sharing status
     setIsSharing(true);
     setShowStopButton(true);
-
-    // Get the bus number that's being shared
-    const busNumber = localStorage.getItem("sharingBusNumber") || "";
     setSharingBusNumber(busNumber);
-
-    // Get current location for map
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        setCurrentLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        });
-      }, error => {
-        console.error("Error getting current location:", error);
-      });
-    }
+    
+    // Show add bus prompt if bus not found
+    setShowAddBusPrompt(!busFound);
   };
 
   const handleStopSharing = () => {
@@ -136,8 +111,8 @@ export default function Share() {
     }, 3000);
   };
 
-  const toggleBusStops = () => {
-    setShowBusStops(!showBusStops);
+  const handleAddBus = () => {
+    navigate("/add-bus");
   };
 
   return (
@@ -162,7 +137,9 @@ export default function Share() {
             </p>
           </div>
         ) : !isSharing ? (
-          <ShareLocation onShareComplete={handleShareComplete} />
+          <div>
+            <ShareLocation onShareComplete={handleShareComplete} />
+          </div>
         ) : (
           <div className="max-w-md mx-auto">
             <div className="text-center mb-6">
@@ -181,26 +158,23 @@ export default function Share() {
               </p>
             </div>
             
-            <div className="mb-4">
-              <Map className="h-[200px] w-full rounded-lg overflow-hidden" useGoogleMaps={true} location="visakhapatnam" />
-            </div>
-            
-            <div className="mb-6">
-              <Button 
-                variant="outline" 
-                onClick={toggleBusStops} 
-                className="w-full flex items-center justify-center gap-2"
-              >
-                <MapPin className="h-4 w-4" />
-                {showBusStops ? "Hide Bus Stops" : "View Bus Stops"}
-              </Button>
-            </div>
-            
-            {showBusStops && (
-              <div className="mb-6">
-                <ViewBusStops busNumber={sharingBusNumber} onBack={() => setShowBusStops(false)} />
+            {showAddBusPrompt && (
+              <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
+                <p className="text-yellow-700 mb-3">Can't find this bus in our database?</p>
+                <Button 
+                  variant="outline" 
+                  onClick={handleAddBus}
+                  className="flex items-center gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Add New Bus Details</span>
+                </Button>
               </div>
             )}
+            
+            <div className="mb-6">
+              <ViewBusStops busNumber={sharingBusNumber} onBack={() => {}} />
+            </div>
             
             <Button 
               variant="destructive" 

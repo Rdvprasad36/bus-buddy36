@@ -7,14 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function VisakhapatnamBusData() {
   const navigate = useNavigate();
-  const [selectedDepot, setSelectedDepot] = useState("all");
-  
-  // Visakhapatnam bus depots for simplified display
-  const depots = [
-    "Simhachalam Depot",
-    "Gajuwaka Depot",
-    "Maddilapalem Depot"
-  ];
+  const [selectedTab, setSelectedTab] = useState("buses");
   
   // Common routes in Visakhapatnam
   const routes = [
@@ -25,13 +18,18 @@ export function VisakhapatnamBusData() {
     "Gopalapatnam - Rushikonda"
   ];
 
+  const handleViewCompleteData = () => {
+    // Navigate to data page with the selected tab as a query parameter
+    navigate(`/data?tab=${selectedTab}`);
+  };
+
   return (
     <Card className="mb-6">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg font-bold">Visakhapatnam Bus Data</CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="buses" className="w-full">
+        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
           <TabsList className="grid grid-cols-2 mb-4 w-full">
             <TabsTrigger value="buses">All Buses</TabsTrigger>
             <TabsTrigger value="routes">By Route</TabsTrigger>
@@ -39,15 +37,15 @@ export function VisakhapatnamBusData() {
           
           <TabsContent value="buses" className="mt-0">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              {depots.map((depot) => (
+              {["1C", "28C", "999", "400", "37G", "900"].map((busNumber) => (
                 <div 
-                  key={depot} 
-                  className={`bg-white dark:bg-gray-800 border rounded-lg p-4 hover:border-blue-500 cursor-pointer transition-all ${selectedDepot === depot ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : ""}`}
-                  onClick={() => setSelectedDepot(depot)}
+                  key={busNumber} 
+                  className="bg-white dark:bg-gray-800 border rounded-lg p-4 hover:border-blue-500 cursor-pointer transition-all"
+                  onClick={() => navigate(`/get?bus=${busNumber}`)}
                 >
-                  <h3 className="font-medium">{depot}</h3>
+                  <h3 className="font-medium">{busNumber}</h3>
                   <p className="text-sm text-muted-foreground">
-                    View routes from this depot
+                    View bus details
                   </p>
                 </div>
               ))}
@@ -60,6 +58,7 @@ export function VisakhapatnamBusData() {
                 <div 
                   key={route} 
                   className="bg-white dark:bg-gray-800 border rounded-lg p-4 hover:border-blue-500 cursor-pointer transition-all"
+                  onClick={() => navigate(`/data?tab=routes&route=${encodeURIComponent(route)}`)}
                 >
                   <h3 className="font-medium">{route}</h3>
                   <p className="text-sm text-muted-foreground">
@@ -75,7 +74,7 @@ export function VisakhapatnamBusData() {
           <Button 
             variant="outline" 
             size="sm" 
-            onClick={() => navigate("/data")}
+            onClick={handleViewCompleteData}
             className="text-blue-600"
           >
             View Complete Bus Data

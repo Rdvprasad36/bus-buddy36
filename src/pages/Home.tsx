@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
@@ -73,7 +72,7 @@ export default function Home() {
   };
 
   const handleShareMyLocation = () => {
-    toast.info("Live location sharing will be available soon");
+    navigate("/share-live");
   };
 
   const handleDutyChange = (onDuty: boolean) => {
@@ -94,7 +93,6 @@ export default function Home() {
       <NavBar isLoggedIn={isLoggedIn} userName={userName} />
       
       <main className="flex-1 container mx-auto pt-20 pb-6 px-4">
-        {/* Welcome Message */}
         {isLoggedIn && (
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6 text-center">
             <h2 className="text-xl font-bold text-blue-800 dark:text-blue-300">Welcome to Bus Buddy, {userName}!</h2>
@@ -102,7 +100,6 @@ export default function Home() {
           </div>
         )}
         
-        {/* Bus Data Section */}
         <VisakhapatnamBusData />
         
         {showStops && selectedBusData ? (
