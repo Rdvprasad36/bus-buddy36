@@ -16,6 +16,7 @@ import { Search, Bus, Plus, MapPin, Filter } from "lucide-react";
 import { DepotBusList } from "@/components/DepotBusList";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Data() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function Data() {
   const [userName, setUserName] = useState(localStorage.getItem("userName") || "");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDepot, setSelectedDepot] = useState("all");
-  const [viewMode, setViewMode] = useState<"byRoute" | "depotList" | "allBuses">("byRoute");
+  const [viewMode, setViewMode] = useState<"byRoute" | "allBuses">("byRoute");
   const [fromLocation, setFromLocation] = useState("");
   const [toLocation, setToLocation] = useState("");
 
@@ -75,133 +76,92 @@ export default function Data() {
             </Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <Card 
-              className={`p-5 cursor-pointer hover:border-blue-500 transition-all ${viewMode === "byRoute" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : ""}`}
-              onClick={() => setViewMode("byRoute")}
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
-                  <MapPin className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                </div>
-                <h3 className="font-medium">By Route</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Find buses by specifying start and end locations
-              </p>
-            </Card>
-
-            <Card 
-              className={`p-5 cursor-pointer hover:border-blue-500 transition-all ${viewMode === "depotList" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : ""}`}
-              onClick={() => setViewMode("depotList")}
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
-                  <Bus className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                </div>
-                <h3 className="font-medium">Depot List</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Browse buses organized by their operating depot
-              </p>
-            </Card>
-
-            <Card 
-              className={`p-5 cursor-pointer hover:border-blue-500 transition-all ${viewMode === "allBuses" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : ""}`}
-              onClick={() => setViewMode("allBuses")}
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
-                  <Search className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                </div>
-                <h3 className="font-medium">All Buses</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                View complete list of all buses in Visakhapatnam
-              </p>
-            </Card>
+          {/* Modified to show All Buses and By Route side by side */}
+          <div className="mb-6">
+            <Tabs defaultValue="byRoute">
+              <TabsList className="grid grid-cols-2 mb-4">
+                <TabsTrigger value="byRoute">By Route</TabsTrigger>
+                <TabsTrigger value="allBuses">All Buses</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="byRoute">
+                <Card className="p-6">
+                  <h3 className="text-lg font-medium mb-4">Search by Route</h3>
+                  <form onSubmit={handleSearch} className="mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="relative">
+                        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="From (e.g., RTC Complex)"
+                          className="pl-10"
+                          value={fromLocation}
+                          onChange={(e) => setFromLocation(e.target.value)}
+                        />
+                      </div>
+                      <div className="relative">
+                        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="To (e.g., Beach Road)"
+                          className="pl-10"
+                          value={toLocation}
+                          onChange={(e) => setToLocation(e.target.value)}
+                        />
+                      </div>
+                      <Button type="submit" className="flex items-center gap-2">
+                        <Search className="h-4 w-4" />
+                        <span>Search Routes</span>
+                      </Button>
+                    </div>
+                  </form>
+                  <DepotBusList searchQuery={searchQuery} selectedDepot="all" viewMode="route" />
+                </Card>
+              </TabsContent>
+              
+              <TabsContent value="allBuses">
+                <Card className="p-6">
+                  <h3 className="text-lg font-medium mb-4">All Buses</h3>
+                  <div className="relative mb-6">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search bus routes..."
+                      className="pl-10"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                  <DepotBusList searchQuery={searchQuery} selectedDepot="all" />
+                </Card>
+              </TabsContent>
+            </Tabs>
           </div>
           
           <div className="mb-6">
-            {viewMode === "byRoute" && (
-              <Card className="p-6">
-                <h3 className="text-lg font-medium mb-4">Search by Route</h3>
-                <form onSubmit={handleSearch} className="mb-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        placeholder="From (e.g., RTC Complex)"
-                        className="pl-10"
-                        value={fromLocation}
-                        onChange={(e) => setFromLocation(e.target.value)}
-                      />
+            <h3 className="text-lg font-medium mb-4">Select a Depot</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              {depots.map((depot) => (
+                <div 
+                  key={depot} 
+                  className={`bg-white dark:bg-gray-800 border rounded-lg p-6 hover:border-blue-500 cursor-pointer transition-all ${selectedDepot === depot ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : ""}`}
+                  onClick={() => setSelectedDepot(depot)}
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
+                      <Bus className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                     </div>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        placeholder="To (e.g., Beach Road)"
-                        className="pl-10"
-                        value={toLocation}
-                        onChange={(e) => setToLocation(e.target.value)}
-                      />
-                    </div>
-                    <Button type="submit" className="flex items-center gap-2">
-                      <Search className="h-4 w-4" />
-                      <span>Search Routes</span>
-                    </Button>
+                    <h3 className="font-medium">{depot}</h3>
                   </div>
-                </form>
-                <DepotBusList searchQuery={searchQuery} selectedDepot="all" viewMode="route" />
-              </Card>
-            )}
-            
-            {viewMode === "depotList" && (
-              <div>
-                <h3 className="text-lg font-medium mb-4">Select a Depot</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                  {depots.map((depot) => (
-                    <div 
-                      key={depot} 
-                      className={`bg-white dark:bg-gray-800 border rounded-lg p-6 hover:border-blue-500 cursor-pointer transition-all ${selectedDepot === depot ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : ""}`}
-                      onClick={() => setSelectedDepot(depot)}
-                    >
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
-                          <Bus className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <h3 className="font-medium">{depot}</h3>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Click to view all routes operating from this depot
-                      </p>
-                    </div>
-                  ))}
+                  <p className="text-sm text-muted-foreground">
+                    Click to view all routes operating from this depot
+                  </p>
                 </div>
-                
-                {selectedDepot !== "all" && (
-                  <div className="bg-white dark:bg-gray-800 border rounded-lg p-4">
-                    <h2 className="text-xl font-semibold mb-4">{selectedDepot}</h2>
-                    <DepotBusList searchQuery={searchQuery} selectedDepot={selectedDepot} />
-                  </div>
-                )}
+              ))}
+            </div>
+            
+            {selectedDepot !== "all" && (
+              <div className="bg-white dark:bg-gray-800 border rounded-lg p-4">
+                <h2 className="text-xl font-semibold mb-4">{selectedDepot}</h2>
+                <DepotBusList searchQuery={searchQuery} selectedDepot={selectedDepot} />
               </div>
-            )}
-            
-            {viewMode === "allBuses" && (
-              <Card className="p-6">
-                <h3 className="text-lg font-medium mb-4">All Buses</h3>
-                <div className="relative mb-6">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search bus routes..."
-                    className="pl-10"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-                <DepotBusList searchQuery={searchQuery} selectedDepot="all" />
-              </Card>
             )}
           </div>
         </div>

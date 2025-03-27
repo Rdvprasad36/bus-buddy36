@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
 import { ShareLocation } from "@/components/ShareLocation";
 import { Button } from "@/components/ui/button";
-import { X, ThumbsUp } from "lucide-react";
+import { X, ThumbsUp, Bus, Plus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Map } from "@/components/Map";
+import { Link } from "react-router-dom";
+import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
 
 export default function Share() {
   const navigate = useNavigate();
@@ -134,6 +136,10 @@ export default function Share() {
     }, 3000);
   };
 
+  const handleAddBus = () => {
+    navigate("/add-bus");
+  };
+
   return <div className="min-h-screen flex flex-col bg-background">
       <NavBar isLoggedIn={isLoggedIn} userName={userName} />
       
@@ -152,32 +158,69 @@ export default function Share() {
             <p className="text-sm text-muted-foreground animate-pulse">
               Redirecting you back...
             </p>
-          </div> : !isSharing ? <ShareLocation onShareComplete={handleShareComplete} /> : <div className="max-w-md mx-auto text-center">
-            <div className="mb-8">
-              <div className="w-24 h-24 mx-auto bg-green-100 rounded-full flex items-center justify-center animate-pulse-soft">
-                <div className="w-16 h-16 bg-green-400 rounded-full flex items-center justify-center">
-                  <div className="w-8 h-8 bg-green-600 rounded-full"></div>
+          </div> : !isSharing ? (
+            <>
+              <ShareLocation onShareComplete={handleShareComplete} />
+              
+              {/* Add Bus Option */}
+              <div className="max-w-md mx-auto mt-4 text-center">
+                <p className="text-sm text-muted-foreground mb-2">
+                  Can't find your bus?
+                </p>
+                <Button 
+                  variant="outline" 
+                  onClick={handleAddBus}
+                  className="flex items-center gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  <Bus className="h-4 w-4" />
+                  <span>Add New Bus</span>
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="max-w-xl mx-auto text-center">
+              <div className="mb-8">
+                <div className="w-24 h-24 mx-auto bg-green-100 rounded-full flex items-center justify-center animate-pulse-soft">
+                  <div className="w-16 h-16 bg-green-400 rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 bg-green-600 rounded-full"></div>
+                  </div>
                 </div>
               </div>
+              
+              <h1 className="text-2xl font-bold mb-2">You're sharing your bus location</h1>
+              <p className="text-muted-foreground mb-2">
+                Bus Number: <span className="font-bold">{sharingBusNumber}</span>
+              </p>
+              <p className="text-muted-foreground mb-4">
+                Thank you for helping other commuters! Your location is being shared in real-time.
+              </p>
+              
+              <div className="grid md:grid-cols-5 gap-6 mb-6">
+                <div className="md:col-span-3">
+                  <Map className="h-[300px] w-full rounded-lg overflow-hidden" useGoogleMaps={true} location="visakhapatnam" />
+                </div>
+                <div className="md:col-span-2">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Bus Stops</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Link to={`/view-bus-stops?busNumber=${sharingBusNumber}`} className="text-blue-600 hover:underline flex items-center gap-1">
+                        <Bus className="h-4 w-4" />
+                        <span>View all bus stops and locations</span>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+              
+              <Button variant="destructive" onClick={handleStopSharing} className="gap-2 py-[24px]">
+                <X className="h-4 w-4" />
+                <span>Stop Sharing</span>
+              </Button>
             </div>
-            
-            <h1 className="text-2xl font-bold mb-2">You're sharing your bus location</h1>
-            <p className="text-muted-foreground mb-2">
-              Bus Number: <span className="font-bold">{sharingBusNumber}</span>
-            </p>
-            <p className="text-muted-foreground mb-8">
-              Thank you for helping other commuters! Your location is being shared in real-time.
-            </p>
-            
-            <div className="mb-6">
-              <Map className="h-[300px] w-full rounded-lg overflow-hidden" useGoogleMaps={true} location="visakhapatnam" />
-            </div>
-            
-            <Button variant="destructive" onClick={handleStopSharing} className="gap-2 py-[24px]">
-              <X className="h-4 w-4" />
-              <span>Stop Sharing</span>
-            </Button>
-          </div>}
+          )}
       </main>
     </div>;
 }
