@@ -132,7 +132,7 @@ export default function Index() {
             </div>
           </section>
           
-          {/* Get Started - with violet colored text for signup/guest */}
+          {/* Get Started - changing Continue as Guest to black */}
           <section className="text-center mb-8">
             <div className="bg-blue-600 text-white rounded-xl p-8 shadow-lg">
               <h2 className="text-2xl font-bold mb-4">Ready to Get Started?</h2>
@@ -150,7 +150,7 @@ export default function Index() {
                 <Button 
                   variant="outline" 
                   size="lg"
-                  className="text-purple-300 border-white hover:bg-white/20"
+                  className="text-black border-white hover:bg-white/20"
                   onClick={() => navigate("/home")}
                 >
                   Continue as Guest <ArrowRight className="ml-2 h-4 w-4" />
