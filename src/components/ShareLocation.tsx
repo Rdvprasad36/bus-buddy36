@@ -10,11 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Share2, Users, Map } from "lucide-react";
+import { Share2, Users, Map, Plus, Bus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { BusNumberSelector } from "@/components/BusNumberSelector";
 import { BusCapacitySelector } from "@/components/BusCapacitySelector";
 import { startLocationSharing } from "@/utils/locationSharing";
+import { useNavigate } from "react-router-dom";
 
 interface ShareLocationProps {
   className?: string;
@@ -28,10 +29,12 @@ export function ShareLocation({
   const [isSharing, setIsSharing] = useState(false);
   const [busNumber, setBusNumber] = useState("");
   const [capacity, setCapacity] = useState("medium");
+  const navigate = useNavigate();
   
   const userId = localStorage.getItem("userId") || `user_${Math.floor(Math.random() * 10000)}`;
   const userName = localStorage.getItem("userName") || "Anonymous";
   const gender = localStorage.getItem("gender") || "not-specified";
+  const userType = localStorage.getItem("userType") || "passenger";
   
   useEffect(() => {
     if (!localStorage.getItem("userId")) {
@@ -67,6 +70,10 @@ export function ShareLocation({
     );
   };
 
+  const handleAddBus = () => {
+    navigate("/add-bus");
+  };
+
   return (
     <Card className={cn("w-full max-w-md mx-auto", className)}>
       <CardHeader>
@@ -85,6 +92,21 @@ export function ShareLocation({
             onBusNumberChange={setBusNumber} 
             disabled={isSharing}
           />
+          
+          {(userType === "driver" || userType === "conductor") && (
+            <div className="text-center">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={handleAddBus}
+                className="flex items-center gap-1"
+              >
+                <Plus className="h-4 w-4" />
+                <Bus className="h-4 w-4" />
+                <span>Can't find your bus? Add New Bus</span>
+              </Button>
+            </div>
+          )}
           
           <BusCapacitySelector 
             capacity={capacity} 

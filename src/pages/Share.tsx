@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
 import { ShareLocation } from "@/components/ShareLocation";
 import { Button } from "@/components/ui/button";
-import { X, ThumbsUp } from "lucide-react";
+import { X, ThumbsUp, MapPin } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Map } from "@/components/Map";
+import { ViewBusStops } from "@/components/ViewBusStops";
 
 export default function Share() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ export default function Share() {
   const [showThankYou, setShowThankYou] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [sharingBusNumber, setSharingBusNumber] = useState("");
+  const [showBusStops, setShowBusStops] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -134,11 +136,17 @@ export default function Share() {
     }, 3000);
   };
 
-  return <div className="min-h-screen flex flex-col bg-background">
+  const toggleBusStops = () => {
+    setShowBusStops(!showBusStops);
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
       <NavBar isLoggedIn={isLoggedIn} userName={userName} />
       
       <main className="flex-1 container mx-auto pt-24 pb-6 px-4">
-        {showThankYou ? <div className="max-w-md mx-auto text-center">
+        {showThankYou ? (
+          <div className="max-w-md mx-auto text-center">
             <div className="mb-8">
               <div className="w-24 h-24 mx-auto bg-green-100 rounded-full flex items-center justify-center">
                 <ThumbsUp className="h-12 w-12 text-green-600" />
@@ -152,32 +160,59 @@ export default function Share() {
             <p className="text-sm text-muted-foreground animate-pulse">
               Redirecting you back...
             </p>
-          </div> : !isSharing ? <ShareLocation onShareComplete={handleShareComplete} /> : <div className="max-w-md mx-auto text-center">
-            <div className="mb-8">
+          </div>
+        ) : !isSharing ? (
+          <ShareLocation onShareComplete={handleShareComplete} />
+        ) : (
+          <div className="max-w-md mx-auto">
+            <div className="text-center mb-6">
               <div className="w-24 h-24 mx-auto bg-green-100 rounded-full flex items-center justify-center animate-pulse-soft">
                 <div className="w-16 h-16 bg-green-400 rounded-full flex items-center justify-center">
                   <div className="w-8 h-8 bg-green-600 rounded-full"></div>
                 </div>
               </div>
+              
+              <h1 className="text-2xl font-bold mt-4 mb-2">You're sharing your bus location</h1>
+              <p className="text-muted-foreground mb-2">
+                Bus Number: <span className="font-bold">{sharingBusNumber}</span>
+              </p>
+              <p className="text-muted-foreground mb-4">
+                Thank you for helping other commuters! Your location is being shared in real-time.
+              </p>
             </div>
             
-            <h1 className="text-2xl font-bold mb-2">You're sharing your bus location</h1>
-            <p className="text-muted-foreground mb-2">
-              Bus Number: <span className="font-bold">{sharingBusNumber}</span>
-            </p>
-            <p className="text-muted-foreground mb-8">
-              Thank you for helping other commuters! Your location is being shared in real-time.
-            </p>
+            <div className="mb-4">
+              <Map className="h-[200px] w-full rounded-lg overflow-hidden" useGoogleMaps={true} location="visakhapatnam" />
+            </div>
             
             <div className="mb-6">
-              <Map className="h-[300px] w-full rounded-lg overflow-hidden" useGoogleMaps={true} location="visakhapatnam" />
+              <Button 
+                variant="outline" 
+                onClick={toggleBusStops} 
+                className="w-full flex items-center justify-center gap-2"
+              >
+                <MapPin className="h-4 w-4" />
+                {showBusStops ? "Hide Bus Stops" : "View Bus Stops"}
+              </Button>
             </div>
             
-            <Button variant="destructive" onClick={handleStopSharing} className="gap-2 py-[24px]">
+            {showBusStops && (
+              <div className="mb-6">
+                <ViewBusStops busNumber={sharingBusNumber} onBack={() => setShowBusStops(false)} />
+              </div>
+            )}
+            
+            <Button 
+              variant="destructive" 
+              onClick={handleStopSharing} 
+              className="w-full gap-2 py-[24px]"
+            >
               <X className="h-4 w-4" />
               <span>Stop Sharing</span>
             </Button>
-          </div>}
+          </div>
+        )}
       </main>
-    </div>;
+    </div>
+  );
 }
