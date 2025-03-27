@@ -154,8 +154,8 @@ export function ShareLocation({ onShareComplete }: ShareLocationProps) {
               Bus Capacity
             </label>
             <BusCapacitySelector 
-              value={capacity} 
-              onChange={setCapacity}
+              capacity={capacity} 
+              onCapacityChange={setCapacity}
               disabled={isSharing}
             />
           </div>
