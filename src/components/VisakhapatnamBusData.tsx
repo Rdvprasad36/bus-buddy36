@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function VisakhapatnamBusData() {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("buses");
+  const isMobile = useIsMobile();
   
   // Common routes in Visakhapatnam
   const routes = [
@@ -17,6 +19,12 @@ export function VisakhapatnamBusData() {
     "Madhurawada - Steel Plant",
     "Gopalapatnam - Rushikonda"
   ];
+
+  // All available buses
+  const allBuses = ["1C", "28C", "999", "400", "37G", "900"];
+  
+  // Show fewer buses on mobile
+  const displayBuses = isMobile ? allBuses.slice(0, 4) : allBuses;
 
   const handleViewCompleteData = () => {
     // Navigate to data page with the selected tab as a query parameter
@@ -37,7 +45,7 @@ export function VisakhapatnamBusData() {
           
           <TabsContent value="buses" className="mt-0">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              {["1C", "28C", "999", "400", "37G", "900"].map((busNumber) => (
+              {displayBuses.map((busNumber) => (
                 <div 
                   key={busNumber} 
                   className="bg-white dark:bg-gray-800 border rounded-lg p-4 hover:border-blue-500 cursor-pointer transition-all"
