@@ -31,7 +31,7 @@ export default function About() {
       name: "V. Venkata Danush",
       role: "Mobile Developer",
       bio: "Specialized in location-based services and real-time tracking applications",
-      image: "/lovable-uploads/c9eea39d-3157-41ec-8ac0-b4589d7ac72a.png",
+      image: "/lovable-uploads/5d782fa0-5ac8-4363-bb19-388a7c567d55.png",
       linkedin: "https://www.linkedin.com/in/venkatadanush/"
     },
     {
@@ -73,14 +73,17 @@ export default function About() {
                     />
                   </Avatar>
                 </div>
-                <div className="p-4 text-center">
+                <div className="p-4">
+                  <h3 className="font-bold text-lg mb-1">{member.name}</h3>
+                  <p className="text-blue-600 text-sm mb-2">{member.role}</p>
                   <a 
                     href={member.linkedin} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="text-blue-600 hover:text-blue-800 transition-colors font-bold text-lg"
+                    className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors"
                   >
-                    {member.name}
+                    <Linkedin className="h-4 w-4 mr-1" />
+                    LinkedIn Profile
                   </a>
                 </div>
               </div>
@@ -132,4 +135,3 @@ export default function About() {
     </div>
   );
 }
-
