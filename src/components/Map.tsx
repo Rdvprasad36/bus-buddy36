@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -124,18 +125,24 @@ export function Map({
   };
 
   if (useGoogleMaps) {
-    // Modified Google Maps URL to focus on roads and bus stops
-    let googleMapsSrc = `https://www.google.com/maps/embed/v1/place?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=${encodeURIComponent(location)}&maptype=roadmap`;
+    // Append bus routes and stops parameters if requested
+    let googleMapsSrc = `https://www.google.com/maps/embed/v1/place?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=${encodeURIComponent(location)}`;
     
-    // Focus on bus stops regardless of showBusStopsOnly flag
-    googleMapsSrc = `https://www.google.com/maps/embed/v1/search?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=bus%20stops%20in%20${encodeURIComponent(location)}`;
-    
-    // If a bus number is provided, show that specific bus route's stops
+    // Add bus number to search if provided
     if (busNumber) {
-      googleMapsSrc = `https://www.google.com/maps/embed/v1/search?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=bus%20${encodeURIComponent(busNumber)}%20stops%20in%20${encodeURIComponent(location)}`;
+      googleMapsSrc = `https://www.google.com/maps/embed/v1/place?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=bus%20${encodeURIComponent(busNumber)}%20route%20${encodeURIComponent(location)}`;
     }
     
-    googleMapsSrc += "&zoom=14";
+    // If we want to show only bus stops
+    if (showBusStopsOnly) {
+      googleMapsSrc = `https://www.google.com/maps/embed/v1/search?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=bus%20stops%20in%20${encodeURIComponent(location)}`;
+      
+      if (busNumber) {
+        googleMapsSrc = `https://www.google.com/maps/embed/v1/search?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=bus%20${encodeURIComponent(busNumber)}%20stops%20in%20${encodeURIComponent(location)}`;
+      }
+    }
+    
+    googleMapsSrc += "&zoom=14&maptype=roadmap";
     
     return (
       <div className={cn("relative rounded-lg overflow-hidden", className)}>
@@ -149,7 +156,7 @@ export function Map({
             style={{ border: 0 }} 
             loading="lazy" 
             allowFullScreen
-            title="Google Map of Bus Stops"
+            title="Google Map"
           />
         )}
       </div>
