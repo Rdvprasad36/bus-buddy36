@@ -12,8 +12,8 @@ export default function HowToUse() {
 
   // Video tutorial links
   const tutorialVideos = {
-    passenger: "https://www.youtube.com/watch?v=example-passenger",
-    driver: "https://www.youtube.com/watch?v=example-driver"
+    passenger: "https://youtube.com/shorts/bEJYxk6phQ8?feature=share",
+    driver: "https://youtube.com/shorts/0XIpmtDuE-E?feature=share"
   };
 
   return (

@@ -5,6 +5,7 @@ import { NavBar } from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Home } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export default function About() {
   const navigate = useNavigate();
@@ -16,25 +17,25 @@ export default function About() {
       name: "R.D.V. Prasad",
       role: "Project Lead",
       bio: "Transportation expert with a passion for public transit solutions",
-      image: "https://randomuser.me/api/portraits/men/32.jpg"
+      avatarColor: "bg-blue-500"
     },
     {
       name: "S. Vamsi Naidu",
       role: "UX Designer",
       bio: "Passionate about creating accessible interfaces for public services",
-      image: "https://randomuser.me/api/portraits/men/44.jpg"
+      avatarColor: "bg-green-500"
     },
     {
       name: "V. Venkata Danush",
       role: "Mobile Developer",
       bio: "Specialized in location-based services and real-time tracking applications",
-      image: "https://randomuser.me/api/portraits/men/66.jpg"
+      avatarColor: "bg-purple-500"
     },
     {
       name: "V. Akshata Chandra",
       role: "Data Scientist",
       bio: "Working with transportation data to optimize routes and predict arrival times",
-      image: "https://randomuser.me/api/portraits/women/65.jpg"
+      avatarColor: "bg-pink-500"
     }
   ];
 
@@ -72,12 +73,12 @@ export default function About() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {teamMembers.map((member, index) => (
               <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="h-48 overflow-hidden">
-                  <img 
-                    src={member.image} 
-                    alt={member.name} 
-                    className="w-full h-full object-cover"
-                  />
+                <div className="h-48 overflow-hidden flex items-center justify-center p-4">
+                  <Avatar className="w-32 h-32">
+                    <AvatarFallback className={`text-4xl ${member.avatarColor} text-white`}>
+                      {member.name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
                 </div>
                 <div className="p-4">
                   <h3 className="font-bold text-lg mb-1">{member.name}</h3>
