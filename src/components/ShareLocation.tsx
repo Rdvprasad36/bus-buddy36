@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +24,11 @@ export function ShareLocation({ onShareComplete }: ShareLocationProps) {
 
   // In a real app, this would come from a database
   const knownBusNumbers = ["1C", "28C", "999", "400", "37G", "900", "500", "555", "10K", "60R", "6", "10A"];
+
+  const handleCapacityChange = (value: string) => {
+    // Cast the string value to our specific type
+    setCapacity(value as "empty" | "medium" | "full");
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -155,7 +159,7 @@ export function ShareLocation({ onShareComplete }: ShareLocationProps) {
             </label>
             <BusCapacitySelector 
               capacity={capacity} 
-              onCapacityChange={setCapacity}
+              onCapacityChange={handleCapacityChange}
               disabled={isSharing}
             />
           </div>
