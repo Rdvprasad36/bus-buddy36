@@ -3,9 +3,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavBar } from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Home } from "lucide-react";
+import { ArrowLeft, Home, Linkedin } from "lucide-react";
 import { Logo } from "@/components/Logo";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 export default function About() {
   const navigate = useNavigate();
@@ -17,25 +17,29 @@ export default function About() {
       name: "R.D.V. Prasad",
       role: "Project Lead",
       bio: "Transportation expert with a passion for public transit solutions",
-      avatarColor: "bg-blue-500"
+      image: "/lovable-uploads/aefb4811-696a-48c8-9485-8b8072aa402d.png",
+      linkedin: "https://www.linkedin.com/in/durga-venkata-prasad-rapeti-b154022b7/"
     },
     {
       name: "S. Vamsi Naidu",
       role: "UX Designer",
       bio: "Passionate about creating accessible interfaces for public services",
-      avatarColor: "bg-green-500"
+      image: "/lovable-uploads/18291f74-c685-45c8-b092-82afc275afae.png",
+      linkedin: "https://www.linkedin.com/in/sanapathi-vamsi-naidu-471538297/"
     },
     {
       name: "V. Venkata Danush",
       role: "Mobile Developer",
       bio: "Specialized in location-based services and real-time tracking applications",
-      avatarColor: "bg-purple-500"
+      image: "/lovable-uploads/5d782fa0-5ac8-4363-bb19-388a7c567d55.png",
+      linkedin: "https://www.linkedin.com/in/venkatadanush/"
     },
     {
       name: "V. Akshata Chandra",
       role: "Data Scientist",
       bio: "Working with transportation data to optimize routes and predict arrival times",
-      avatarColor: "bg-pink-500"
+      image: "/lovable-uploads/b53bbed1-c878-4f74-bf91-d612c338a84f.png",
+      linkedin: "https://www.linkedin.com/in/akshatachandraveesam/"
     }
   ];
 
@@ -56,6 +60,36 @@ export default function About() {
             </p>
           </div>
           
+          <h2 className="text-2xl font-bold mb-6 text-center">Our Team</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {teamMembers.map((member, index) => (
+              <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="h-48 overflow-hidden flex items-center justify-center p-4">
+                  <Avatar className="w-32 h-32">
+                    <AvatarImage 
+                      src={member.image} 
+                      alt={member.name}
+                      className="object-cover"
+                    />
+                  </Avatar>
+                </div>
+                <div className="p-4">
+                  <h3 className="font-bold text-lg mb-1">{member.name}</h3>
+                  <p className="text-blue-600 text-sm mb-2">{member.role}</p>
+                  <a 
+                    href={member.linkedin} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+                  >
+                    <Linkedin className="h-4 w-4 mr-1" />
+                    LinkedIn Profile
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+          
           <div className="mb-12 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
             <h2 className="text-2xl font-bold mb-4 text-blue-600">Our Mission</h2>
             <p className="mb-4">
@@ -67,26 +101,6 @@ export default function About() {
             <p>
               Through a collaborative community approach, we enable bus passengers to help each other by sharing real-time location data, creating a network effect that improves the experience for everyone.
             </p>
-          </div>
-          
-          <h2 className="text-2xl font-bold mb-6 text-center">Meet Our Team</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {teamMembers.map((member, index) => (
-              <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="h-48 overflow-hidden flex items-center justify-center p-4">
-                  <Avatar className="w-32 h-32">
-                    <AvatarFallback className={`text-4xl ${member.avatarColor} text-white`}>
-                      {member.name.split(' ').map(n => n[0]).join('')}
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-bold text-lg mb-1">{member.name}</h3>
-                  <p className="text-blue-600 text-sm mb-2">{member.role}</p>
-                  <p className="text-muted-foreground text-sm">{member.bio}</p>
-                </div>
-              </div>
-            ))}
           </div>
           
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-12">
