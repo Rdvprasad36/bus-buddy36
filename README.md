@@ -1,69 +1,131 @@
-# Welcome to your Lovable project
+# Bus_Buddy
+ 
+# Bus Buddy Locator 🚌📍
 
-## Project info
+<div align="center">
+  <img src="/logo.png" alt="Bus Buddy Logo" width="200"/>
+  <h1>Bus Buddy Locator 🚌📍</h1>
+</div>
 
-**URL**: https://lovable.dev/projects/0ccd80c7-baa3-48b4-b13c-8924e19633a4
+A real-time bus tracking and location sharing application that helps users track buses and share their locations with others.
 
-## How can I edit this code?
+## Features ✨
 
-There are several ways of editing your application.
+- Real-time bus location tracking
+- Live location sharing between users
+- Interactive map interface
+- Bus route information
+- Estimated arrival times
+- User-friendly mobile-responsive design
 
-**Use Lovable**
+## Technology Stack 🛠️
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/0ccd80c7-baa3-48b4-b13c-8924e19633a4) and start prompting.
+- **Frontend**: 
+  - React 18
+  - TypeScript
+  - Vite (Build Tool)
+  - shadcn-ui (UI Components)
+  - Tailwind CSS (Styling)
+  
+- **Mapping**:
+  - Mapbox/Google Maps API *(configure in .env)*
 
-Changes made via Lovable will be committed automatically to this repo.
+- **State Management**:
+  - React Context API
+  - React Query
 
-**Use your preferred IDE**
+## Getting Started 🚀
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
+- Node.js (v18 or higher)
+- npm (v9 or higher)
+- Git
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### Installation
+1. Clone the repository:
+```bash
+git clone https://github.com/your-repo/bus-buddy-locator.git
+cd bus-buddy-locator
 ```
 
-**Edit a file directly in GitHub**
+2. Install dependencies:
+```bash
+npm install
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+3. Configure environment variables:
+```bash
+cp .env.example .env
+```
+Edit the `.env` file with your API keys and configuration.
 
-**Use GitHub Codespaces**
+### Running the App
+- Development mode:
+```bash
+npm run dev
+```
+- Production build:
+```bash
+npm run build
+npm run preview
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Configuration ⚙️
 
-## What technologies are used for this project?
+### Environment Variables
+Create a `.env` file in the root directory with the following variables:
+```
+VITE_MAP_API_KEY=your_map_provider_api_key
+VITE_API_BASE_URL=https://api.your-backend.com
+VITE_GOOGLE_ANALYTICS_ID=UA-XXXXX-Y
+```
 
-This project is built with .
+### Project Structure
+```
+bus-buddy-locator/
+├── public/            # Static assets
+├── src/
+│   ├── components/    # Reusable components
+│   ├── pages/         # Application pages
+│   ├── hooks/         # Custom hooks
+│   ├── utils/         # Utility functions
+│   ├── App.tsx        # Main application component
+│   └── main.tsx       # Application entry point
+├── .env.example       # Environment variables template
+├── vite.config.ts     # Build configuration
+└── package.json       # Project dependencies
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Deployment 🚀
 
-## How can I deploy this project?
+The application can be deployed to any static hosting service:
 
-Simply open [Lovable](https://lovable.dev/projects/0ccd80c7-baa3-48b4-b13c-8924e19633a4) and click on Share -> Publish.
+### Vercel
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone)
 
-## I want to use a custom domain - is that possible?
+### Netlify
+[![Deploy with Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy)
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+### Manual Deployment
+1. Build the application:
+```bash
+npm run build
+```
+2. Deploy the `dist` folder to your preferred hosting provider.
+
+## Contributing 🤝
+
+We welcome contributions! Please follow these steps:
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License 📄
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support ❤️
+
+For support or feature requests, please open an issue on our [GitHub repository](https://github.com/your-repo/bus-buddy-locator/issues).
