@@ -31,7 +31,7 @@ export default function About() {
       name: "V. Venkata Danush",
       role: "Mobile Developer",
       bio: "Specialized in location-based services and real-time tracking applications",
-      image: "/lovable-uploads/5d782fa0-5ac8-4363-bb19-388a7c567d55.png",
+      image: "/lovable-uploads/48e25d44-1df1-48a2-9afd-d07085e71d06.png",
       linkedin: "https://www.linkedin.com/in/venkatadanush/"
     },
     {
