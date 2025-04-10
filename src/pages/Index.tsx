@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { Map } from "@/components/Map";
 import { NavBar } from "@/components/NavBar";
-import { Bus, Map as MapIcon, Share2, ArrowRight, User } from "lucide-react";
+import { Bus, Map as MapIcon, Share2, ArrowRight, User, MessageCircle } from "lucide-react";
+import { BoochiAIAgent } from "@/components/BoochiAIAgent";
+import { toast } from "@/hooks/use-toast";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -13,6 +15,7 @@ export default function Index() {
   const [animationComplete, setAnimationComplete] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+  const [isAIOpen, setIsAIOpen] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -51,6 +54,13 @@ export default function Index() {
       navigate("/login");
     }
   };
+  
+  const toggleAIAgent = () => {
+    setIsAIOpen(!isAIOpen);
+    if (!isAIOpen) {
+      toast.info("Boochi AI Assistant is ready to help you");
+    }
+  };
 
   if (showIntro) {
     return (
@@ -76,9 +86,16 @@ export default function Index() {
         <div className="flex flex-col gap-6">
           {/* Hero Section */}
           <section className="text-center py-12 mb-4">
-            <h1 className="text-4xl font-bold mb-4 text-blue-600">Welcome to Bus Buddy</h1>
+            <div className="flex justify-center items-center mb-4">
+              <h1 className="text-4xl font-bold text-blue-600">Welcome to Bus Buddy</h1>
+              <img 
+                src="/lovable-uploads/c9c1e147-3efb-42c9-94c9-6b5fe15da20d.png" 
+                alt="Boochi" 
+                className="w-12 h-12 ml-2 animate-bounce-slow"
+              />
+            </div>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Your companion for hassle-free bus travel across Andhra Pradesh
+              Your companion for hassle-free bus travel with AI-powered assistance
             </p>
           </section>
           
@@ -90,21 +107,23 @@ export default function Index() {
                 className="h-[400px] w-full mb-2" 
                 useGoogleMaps={true} 
                 allowEditing={false}
-                location="visakhapatnam" 
+                location="visakhapatnam bus routes" 
+                showBusStopsOnly={true}
+                showTraffic={true}
               />
               <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-                Interactive map of Visakhapatnam bus routes
+                Interactive map of Visakhapatnam bus routes with traffic information
               </p>
             </div>
           </section>
           
           {/* Features */}
-          <section className="grid md:grid-cols-2 gap-6 mb-8">
+          <section className="grid md:grid-cols-3 gap-6 mb-8">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transform transition-all hover:scale-105">
               <div className="mb-4 bg-blue-100 dark:bg-blue-900 p-3 rounded-full w-fit">
                 <Bus className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-blue-600">Get The Bus Location</h3>
+              <h3 className="text-xl font-semibold mb-2 text-blue-600">Get Bus Location</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-4">Find real-time updates on bus locations, routes, and schedules.</p>
               <Button 
                 onClick={handleGetBusClick}
@@ -128,6 +147,28 @@ export default function Index() {
               >
                 <Share2 className="mr-2 h-5 w-5" />
                 <span>Share Bus Location</span>
+              </Button>
+            </div>
+            
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transform transition-all hover:scale-105">
+              <div className="mb-4 bg-blue-100 dark:bg-blue-900 p-3 rounded-full w-fit">
+                <div className="relative">
+                  <img 
+                    src="/lovable-uploads/c9c1e147-3efb-42c9-94c9-6b5fe15da20d.png" 
+                    alt="Boochi" 
+                    className="h-8 w-8"
+                  />
+                </div>
+              </div>
+              <h3 className="text-xl font-semibold mb-2 text-blue-600">Boochi AI Assistant</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">Get AI-powered assistance for routes, timings, and travel help.</p>
+              <Button 
+                variant="default"
+                onClick={toggleAIAgent}
+                className="w-full bg-purple-600 hover:bg-purple-700"
+              >
+                <MessageCircle className="mr-2 h-5 w-5" />
+                <span>Chat with Boochi</span>
               </Button>
             </div>
           </section>
@@ -160,6 +201,21 @@ export default function Index() {
           </section>
         </div>
       </main>
+      
+      {/* Boochi AI floating button */}
+      <Button
+        onClick={toggleAIAgent}
+        className="fixed bottom-4 right-4 h-14 w-14 rounded-full shadow-lg z-50 p-0 bg-purple-600 hover:bg-purple-700"
+      >
+        <img 
+          src="/lovable-uploads/c9c1e147-3efb-42c9-94c9-6b5fe15da20d.png" 
+          alt="Boochi" 
+          className="h-8 w-8"
+        />
+      </Button>
+      
+      {/* Boochi AI Agent */}
+      <BoochiAIAgent isOpen={isAIOpen} onClose={() => setIsAIOpen(false)} />
     </div>
   );
 }

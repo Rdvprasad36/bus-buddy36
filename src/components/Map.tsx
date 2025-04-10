@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MapPin, Navigation, ZoomIn, ZoomOut } from "lucide-react";
+import { MapPin, Navigation, ZoomIn, ZoomOut, Bus, Route, Landmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -16,6 +16,8 @@ interface MapProps {
   useGoogleMaps?: boolean;
   location?: string;
   showBusStopsOnly?: boolean;
+  showTraffic?: boolean;
+  showDepots?: boolean;
   busNumber?: string;
 }
 
@@ -31,6 +33,8 @@ export function Map({
   useGoogleMaps = false,
   location = "visakhapatnam",
   showBusStopsOnly = false,
+  showTraffic = false,
+  showDepots = false,
   busNumber
 }: MapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -38,6 +42,7 @@ export function Map({
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
   const [currentZoom, setCurrentZoom] = useState(zoom);
+  const [mapType, setMapType] = useState("roadmap");
 
   // Initialize map
   useEffect(() => {
@@ -123,9 +128,13 @@ export function Map({
   const handleZoomOut = () => {
     mapInstance.current?.zoomOut();
   };
+  
+  const changeMapType = (type: string) => {
+    setMapType(type);
+  };
 
   if (useGoogleMaps) {
-    // Append bus routes and stops parameters if requested
+    // Build the Google Maps URL with appropriate parameters
     let googleMapsSrc = `https://www.google.com/maps/embed/v1/place?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=${encodeURIComponent(location)}`;
     
     // Add bus number to search if provided
@@ -142,22 +151,96 @@ export function Map({
       }
     }
     
-    googleMapsSrc += "&zoom=14&maptype=roadmap";
+    // If we want to show depots
+    if (showDepots) {
+      googleMapsSrc = `https://www.google.com/maps/embed/v1/search?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=bus%20depot%20in%20${encodeURIComponent(location)}`;
+    }
+    
+    // If showing traffic
+    if (showTraffic) {
+      googleMapsSrc += "&maptype=roadmap";
+      // Add the traffic layer parameter
+      googleMapsSrc += "&traffic=1"; // This adds the traffic layer
+    } else {
+      googleMapsSrc += `&maptype=${mapType}`;
+    }
+    
+    googleMapsSrc += "&zoom=14";
     
     return (
       <div className={cn("relative rounded-lg overflow-hidden", className)}>
         {!isLoaded ? (
           <Skeleton className="w-full h-full absolute inset-0" />
         ) : (
-          <iframe 
-            width="100%" 
-            height="100%" 
-            src={googleMapsSrc} 
-            style={{ border: 0 }} 
-            loading="lazy" 
-            allowFullScreen
-            title="Google Map"
-          />
+          <>
+            <iframe 
+              width="100%" 
+              height="100%" 
+              src={googleMapsSrc} 
+              style={{ border: 0 }} 
+              loading="lazy" 
+              allowFullScreen
+              title="Google Map"
+            />
+            
+            {/* Map type selector for Google Maps */}
+            <div className="absolute top-2 left-2 bg-white dark:bg-gray-800 rounded-md shadow-md p-1 flex gap-1">
+              <Button 
+                size="sm" 
+                variant={mapType === "roadmap" ? "default" : "ghost"} 
+                className="h-7 text-xs px-2"
+                onClick={() => changeMapType("roadmap")}
+              >
+                <MapPin className="h-3 w-3 mr-1" /> Map
+              </Button>
+              <Button 
+                size="sm" 
+                variant={mapType === "satellite" ? "default" : "ghost"} 
+                className="h-7 text-xs px-2"
+                onClick={() => changeMapType("satellite")}
+              >
+                <Route className="h-3 w-3 mr-1" /> Satellite
+              </Button>
+            </div>
+            
+            {/* Legend for the map */}
+            <div className="absolute bottom-2 left-2 bg-white dark:bg-gray-800 bg-opacity-80 dark:bg-opacity-80 rounded-md shadow-md p-2 text-xs">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-1">
+                  <Bus className="h-3 w-3 text-blue-500" /> 
+                  <span>Bus Route</span>
+                </div>
+                {showBusStopsOnly && (
+                  <div className="flex items-center gap-1">
+                    <MapPin className="h-3 w-3 text-red-500" /> 
+                    <span>Bus Stops</span>
+                  </div>
+                )}
+                {showDepots && (
+                  <div className="flex items-center gap-1">
+                    <Landmark className="h-3 w-3 text-green-500" /> 
+                    <span>Bus Depots</span>
+                  </div>
+                )}
+                {showTraffic && (
+                  <>
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span>Light Traffic</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                      <span>Moderate Traffic</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                      <span>Heavy Traffic</span>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </>
         )}
       </div>
     );
