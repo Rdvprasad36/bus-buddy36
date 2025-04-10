@@ -85,9 +85,8 @@ export function BoochiAIAgent({ isOpen, onClose, className }: BoochiAIAgentProps
       
       // Show toast for AI prediction
       if (lowerInput.includes("predict") || lowerInput.includes("when") || lowerInput.includes("arrival")) {
-        toast.info("Boochi is analyzing traffic patterns to predict arrival times", {
-          description: "Using real-time traffic data and historical patterns",
-        });
+        toast.info("Boochi is analyzing traffic patterns to predict arrival times", 
+          "Using real-time traffic data and historical patterns");
       }
     }, 700);
     
